@@ -15,39 +15,41 @@
 
     </header>
     <section id="body">
-        <form action="/action_page.php">
-            <label id="formLabel">First Name</label><br>
-            <input type="text" id="inputBox"><br><br>
-            <label id="formLabel">Last Name</label><br>
-            <input type="text" id="inputBox"><br><br>
-            <label id="formLabel">User Name</label><br>
-            <input type="text" id="inputBox"><br><br>
-            <label id="formLabel">Email</label><br>
-            <input type="text" id="inputBox"><br><br>
+        <form>
+            <label class="formLabel">First Name</label><br>
+            <input type="text" class="inputBox" id="firstnameInput"><br><br>
+            <label class="formLabel">Last Name</label><br>
+            <input type="text" class="inputBox" id="lastnameInput"><br><br>
+            <label class="formLabel">User Name</label><br>
+            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <label class="formLabel">Email</label><br>
+            <input type="text" class="inputBox" id="emailInput"><br><br>
 
-            <label id="formLabel">Gender</label><br>
-            <input type="checkbox" id="checkbox" value="male">
-            <label >male</label><br>
-            <input type="checkbox" id="checkbox" value="female">
-            <label >female</label><br>
-            <input type="checkbox" id="checkbox" value="no-gender">
-            <label >prefer not to say</label><br><br>
+            <label class="formLabel">Gender</label><br>
+            <input type="checkbox" class="checkbox" id="maleCheckbox" value="male">
+            <label id="maleCheckboxLabel">male</label><br>
+            <input type="checkbox" class="checkbox" id="femaleCheckbox" value="female">
+            <label id="femaleCheckboxLabel">female</label><br>
+            <input type="checkbox" class="checkbox" id="no-genderCheckbox" value="no-gender">
+            <label id="no-genderCheckboxLabel">prefer not to say</label><br><br>
 
-            <label id="formLabel">Password</label><br>
-            <input type="text" id="inputBox"><br><br>
-            <label id="formLabel">Re-Password</label><br>
-            <input type="text" id="inputBox"><br><br>
+            <label class="formLabel">Password</label><br>
+            <input type="text" class="inputBox" id="passInput"><br><br>
+            <label class="formLabel">Re-Password</label><br>
+            <input type="text" class="inputBox" id="re-passInput"><br><br>
 
-            <label id="formLabel">Would you like to register as a local as well?</label><br>
-            <input type="checkbox" id="checkbox" value="yes">
-            <label >Yes</label><br>
-            <input type="checkbox" id="checkbox" value="no">
-            <label >No</label><br><br>
+            <label class="formLabel">Would you like to register as a local as well?</label><br>
+            <input type="checkbox" class="checkbox" id="registerAsLocal-y-checkbox" value="yes">
+            <label id="registerAsLocal-yLabel">Yes</label><br>
+            <input type="checkbox" class="checkbox" id="registerAsLocal-n-checkbox" value="no">
+            <label id="registerAsLocal-nLabel">No</label><br><br>
 
-            <button>Resister</button>
-            <p>already a member? click here to login</p>
+            <button id="registerBtn">Resister</button>
+            <p>already a member? <span class="redirect" id="redirectToLogin">click <span id="click-here">here</span> to login</span></p>
         </form> 
     </section>
     <footer>links</footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/signup.js"></script>
 </body>
 </html>

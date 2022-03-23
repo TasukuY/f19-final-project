@@ -9,3 +9,11 @@ footer {
 #body {
     background-color: azure;
 }
+
+#click-here {
+    color: blue;
+}
+
+.redirect {
+    cursor: pointer;
+}
