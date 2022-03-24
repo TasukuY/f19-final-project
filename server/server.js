@@ -1,16 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const exp = require('constants');
+require('dotenv').config();
 
-const baseURL = '/locals/';
+const baseURL = '/localseelocaldo/';
 const {getMessages} = require('./controller');
+const {seed} = require('./seed');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
+app.get('/seed', seed);
 app.get(baseURL + 'test', getMessages);
 
-const SERVER_PORT = 5100;
-app.listen(SERVER_PORT, () => console.log(`server running at ${SERVER_PORT}`));
+app.listen(process.env.SERVER_PORT, () => console.log(`server running at ${process.env.SERVER_PORT}`));

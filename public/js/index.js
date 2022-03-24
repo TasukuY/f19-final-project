@@ -1,4 +1,4 @@
-const baseURL = `http://localhost:5100/locals/`;
+const baseURL = `http://localhost:5100/localseelocaldo/`;
 
 const redirectToSignupBtn = document.getElementById('redirectToSignup');
 const redirectToLoginP = document.getElementById('redirectToLogin');
