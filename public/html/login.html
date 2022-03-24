@@ -15,17 +15,20 @@
 
     </header>
     <section id="body">
-        <form action="/action_page.php">
-            <label id="formLabel">Username/Email</label><br>
-            <input type="text" id="inputBox"><br><br>
-            <label id="formLabel">Password</label><br>
+        <form> 
+            <label class="formLabel">Email</label><br>
+            <input type="text" id="emailInput"><br><br>
+            <label class="formLabel">Password</label><br>
+            <input type="password" id="passwordInput"><br>
+            <div id="passWrong"></div>
 
-            <button>Login</button>
-            <p>forgot password? click here to reset</p>
+            <br>
+            <button id="loginBtn">Login</button>
+            <p>forgot password? <span class="redirect" id="redirectToResetPass">click <span id="click-here">here</span> to reset</span></p>
         </form> 
     </section>
     <footer>links</footer>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="../js/login.js"></script>
+    <script type="module" src="../js/login.js"></script>
 </body>
 </html>

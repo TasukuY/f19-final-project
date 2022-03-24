@@ -1,3 +1,4 @@
+
 const baseURL = `http://localhost:5100/localseelocaldo/`;
 
 const redirectToLoginP = document.getElementById('redirectToLogin');
@@ -49,24 +50,33 @@ passCheckDiv.appendChild(isValidLengthPara);
 function addNewUser(event){
     event.preventDefault();
 
-    console.log(firstnameInput.value);
-    console.log(lastnameInput.value);
-    console.log(usernameInput.value);
-    console.log(emailInput.value);
-    console.log(passInput.value);
-    console.log(genderCheck());
-    console.log(registerAsLocalCheck());
+    let travelerInfo = {
+        first_name: firstnameInput.value,
+        last_name: lastnameInput.value,
+        username: usernameInput.value,
+        //male, female, no_gender
+        gender: genderCheck()
+    }
+    let authInfo = {
+        email: emailInput.value,
+        password: passInput.value
+    }
+    let localInfo = {
+        //yes, no
+        registerAsLocal: registerAsLocalCheck()
+    }
+     let body = {
+        travelerInfo,
+        authInfo,
+        localInfo
+    }
 
-     // let body = {
-    //     first_name: firstnameInput.value,
-    //     last_name: lastnameInput.value,
-    //     username: usernameInput.value,
-    //     gender: ,
-    //     email: emailInput.value,
-    //     password: passInput.value,
-    //     registerAsLocal: ,
-    // }
-
+    axios.post(baseURL+'register_user', body)
+        .then(res => {
+            console.log(res.data);
+            console.log('added user!!');
+        })
+        .catch(err => console.log(err));
 }
 
 function genderCheck(){

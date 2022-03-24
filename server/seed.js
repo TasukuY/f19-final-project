@@ -16,6 +16,7 @@ module.exports = {
         sequelize.query(`
             drop table if exists travelers;
             drop table if exists auth;
+            drop table if exists locals;
 
             create table travelers (
                 traveler_id serial primary key, 
@@ -31,6 +32,12 @@ module.exports = {
                 password varchar(100)
             );
 
+            create table locals (
+                local_id serial primary key, 
+                traveler_id integer not null references travelers(traveler_id),
+                review float 
+            );
+
         `).then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
@@ -38,14 +45,4 @@ module.exports = {
     }
 }
 
-// create table cities (
-//     city_id serial primary key, 
-//     name varchar,
-//     rating integer,
-//     country_id integer references countries(country_id)
-// );
 
-// INSERT INTO cities (name, rating, country_id)
-// VALUES ('Paris', 5, 61),
-// ('Melbourne', 4, 9),
-// ('Barcelona', 4, 165);
