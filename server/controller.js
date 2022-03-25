@@ -35,6 +35,42 @@ module.exports = {
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
+    },
+    loadCities: (req, res) => {
+        let {country_name} = req.params;
+        sequelize.query(`
+            SELECT * FROM cities WHERE country_id = (SELECT country_id FROM countries WHERE country_name = '${country_name}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+    getCountryId: (req, res) => {
+        let {country_name} = req.params;
+        sequelize.query(`
+            SELECT country_id FROM countries WHERE country_name = '${country_name}'; 
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+    getCityID: (req, res) => {
+        let {city_name} = req.params;
+        sequelize.query(`
+            SELECT city_id FROM cities WHERE city_name = '${city_name}'; 
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+    postNewTripPlan: (req, res) => {
+        let {traveler_id, country_id, city_id, start_date, end_date, num_of_ppl, budget, include_hotel_fee, include_meal_fee, include_transport_fee, budget_detail, note} = req.body;
+        // num_of_ppl = +num_of_ppl;
+        // budget = +budget;
+
+        sequelize.query(`
+            insert into new_trip_plan (traveler_id, country_id, city_id, start_date, end_date, num_of_ppl, budget, include_hotel_fee, include_meal_fee, include_transport_fee, budget_detail, note)
+            values (${traveler_id}, ${country_id}, ${city_id}, '${start_date}', '${end_date}', ${num_of_ppl}, ${budget}, ${include_hotel_fee}, ${include_meal_fee}, ${include_transport_fee}, '${budget_detail}', '${note}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
     }
 }
 

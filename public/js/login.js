@@ -7,10 +7,6 @@ const passwordInput = document.getElementById('passwordInput');
 const passWrongDiv = document.getElementById('passWrong');
 export const a = 'a';
 
-function redirectToTravelerHome(){
-    location.href = './travelerHome.html';
-}
-
 function login(event){
     event.preventDefault();
     let email = emailInput.value;

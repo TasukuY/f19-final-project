@@ -15,14 +15,64 @@
 
     </header>
     <section id="body">
+        <br>
         <form>
-            <label for="countries">Choose a Country:</label><br>
+            <label for="countries">Choose the Country</label><br>
             <select id="countriesSec">
-                <option value="selectOpt">select country</option>
+                <option id="0">select the country</option>
+                <option id="1">Australia</option>
+                <option id="2">Austria</option>
+                <option id="5">Canada</option>
+                <option id="17">China</option>
+                <option id="20">France</option>
+                <option id="14">Germany</option>
+                <option id="10">Greece</option>
+                <option id="9">Hong Kong</option>
+                <option id="16">Italy</option>
+                <option id="11">Japan</option>
+                <option id="8">Malaysia</option>
+                <option id="15">Mexico</option>
+                <option id="3">Netherlands</option>
+                <option id="4">Poland</option>
+                <option id="6">Portugal</option>
+                <option id="7">Russia</option>
+                <option id="21">South Korea</option>
+                <option id="19">Spain</option>
+                <option id="13">Thailand</option>
+                <option id="12">United Kingdom</option>
+                <option id="18">United States</option>
             </select>
             <br><br>
+            <label for="cities">Choose the City</label><br>
+            <select id="citiesSec">
+                <option id="selectOpt">select the city</option>
+                
+            </select>
+            <br><br>
+            <label for="date">Start Date</label><br>
+            <input type="date" id="startDateInput">
+            <br><br>
+            <label for="date">End Date</label><br>
+            <input type="date" id="endDateInput">
+            <br><br>
+            <label for="numOfPeople">How many people?</label><br>
+            <input type="text" id="numberOfPeopleInput">
+            <br><br>
+            <label for="budget">Budget Per Person</label><br>
+            <input type="text" id="budgetInput">
+            <br><br>
+            <input type="checkbox" id="includeHotelCheck" value="hotel">
+            <label for="hotelFee">Do you want to include Hotel fee in the budget?</label><br>
+            <input type="checkbox" id="includeMealCheck" value="meal">
+            <label for="mealFee">Do you want to include Meal fee in the budget?</label><br>
+            <input type="checkbox" id="includeTranspotationCheck" value="transportation">
+            <label for="transportationFee">Do you want to include Transportation fee in the budget?</label><br><br>
+            <textarea id="budgetDetailTextarea" placeholder="Budget Detail: "></textarea>
+            <br><br>
+            <textarea id="noteTextarea" placeholder="Note: "></textarea>
+            <br><br><br>
             <button id="nextBtn">Next</button>
-            <p><span class="redirect" id="redirectToLogin">click <span id="click-here">here</span> to cancel and go back</span></p>
+            <p><span class="redirect" id="backToAccount">click <span id="click-here">here</span> to cancel and go back</span></p>
         </form> 
     </section>
     <footer>links</footer>
