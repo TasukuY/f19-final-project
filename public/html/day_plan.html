@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>LocaLs</title>
+</head>
+<body>
+    <header>
+        <section id="logo">LocaLs</section>
+        <section id="page-link">home</section>
+        <section id="page-link">login</section>
+
+    </header>
+    <section id="body">
+        <br>
+        <form>
+            <br><br><br>
+            <button id="addEventBtn">Add and the day</button>
+            <br><br><br>
+            <h1>make an event</h1>
+            <label for="input">Title of the Event</label><br>
+            <input type="text" id="eventTitleInput">
+            <br><br>
+            <label for="input">Event Starting Time</label><br>
+            <input type="time" id="eventStartingTimeInput" min="08:00" max="21:00">
+            <br><br> 
+            <label for="input">Event total hour</label><br>
+            <input type="text" id="eventTotalHourInput">
+            <br><br> 
+            <label for="colors">Cover Color</label><br>
+            <select id="colorsSec">
+                <option id="defaultColor">select the color</option>
+                <option id="redOpt">Red</option>
+                <option id="blueOpt">Blue</option>
+                <option id="greenOpt">Green</option>
+                <option id="yellowOpt">Yellow</option>
+                <option id="orangeOpt">Orange</option>
+                <option id="purpleOpt">Purple</option>
+            </select>
+            <br><br><br>
+            <button id="addEventBtn">Add and Event</button>
+            <br><br><br>
+            <label for="input">Title of the Trip Plan</label><br>
+            <input type="text" id="titleOfTripInput">
+            <br><br>
+            <textarea id="descriptionTxtarea" placeholder="description of the trip"></textarea>
+            <br><br>
+            <br><br><br>
+            <button id="sendTripBtn">Send the Trip Plan to the Traveler</button>
+        </form> 
+    </section>
+    <footer>links</footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/newTripPlan.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+[
+    {
+      "trip_plan_id": 0,
+      "trip_plan_post_id": 1,
+      "traveler_id": 2,
+      "trip_title": "trip plan title",
+      "trip_description": "description",
+      "day_plans": [
+        {
+          "date": "2022-03-26",
+          "events": [
+            {
+              "event_title": "event title",
+              "start_time": "08:00am",
+              "total_hours": 1.5,
+              "event_detail": "event details",
+              "event_color": "red"
+            }
+          ]
+        }
+      ]
+    }
+
+]

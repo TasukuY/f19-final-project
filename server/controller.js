@@ -1,9 +1,6 @@
-const test = require('./db.json');
-
+const trip_plans = require('./trip_plan_db.json');
 require('dotenv').config()
-
 const Sequelize = require('sequelize');
-
 const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
     dialect: 'postgres',
     dialectOptions: {
@@ -13,9 +10,35 @@ const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
     }
 })
 
+let trip_plan_id = 0;
+let trip_plan_post_id = 0;
+let traveler_id = 0;
+
+let tempTripPlanObj = {
+    "trip_plan_id": trip_plan_id,
+    "trip_plan_post_id": trip_plan_post_id,
+    "traveler_id": traveler_id,
+    "trip_title": "",
+    "trip_description": "",
+    "day_plans": [
+        {
+            "date": "",
+            "events": [
+                {
+                    "event_title": "",
+                    "start_time": "",
+                    "total_hours": 0,
+                    "event_detail": "",
+                    "event_color": ""
+                }
+            ]
+        }
+    ]
+}
+
 module.exports = {
     getMessages: (req, res) => {
-        res.status(200).send(test);
+        res.status(200).send(trip_plans);
     },
     registerUser: (req, res) => {
         let {travelerInfo, authInfo, localInfo} = req.body;
@@ -71,56 +94,25 @@ module.exports = {
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
+    },
+    addTitleAndDescription: (req, res) => {
+        let {trip_title, trip_description} = req.body;
+        sequelize.query(`
+            insert into trip_plan (new_trip_plan_id, local_id, trip_plan_title, trip_plan_description)
+            values(1, 1, '${trip_title}', '${trip_description}');        
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    addDay: (req, res) => {
+        let {date_of_day, title_day, description_day} = req.body;
+        sequelize.query(`
+            insert into day_plan(trip_plan_id, date_of_day, title_day, description_day)
+            values 
+            ((SELECT trip_plan_id FROM trip_plan WHERE trip_plan_id = (SELECT MAX(trip_plan_id) FROM trip_plan)), '${date_of_day}', '${title_day}', '${description_day}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
     }
 }
 
-
-
-// create table travelers (
-//     traveler_id serial primary key, 
-//     first_name varchar(50), 
-//     last_name varchar(50),
-//     username varchar(50),
-//     gender varchar(10)
-// );
-
-// create table auth (
-//     traveler_id integer not null references travelers(traveler_id),
-//     email varchar(100),
-//     password varchar(100)
-// );
-
-// create table locals (
-//     local_id serial primary key, 
-//     traveler_id integer not null references travelers(traveler_id),
-//     review float 
-// );
-
-// INSERT INTO cities (name, rating, country_id)
-// VALUES ('Paris', 5, 61),
-// ('Melbourne', 4, 9),
-// ('Barcelona', 4, 165);
-
-// let travelerInfo = {
-//     first_name: firstnameInput.value,
-//     last_name: lastnameInput.value,
-//     username: usernameInput.value,
-//     //male, female, no_gender
-//     gender: genderCheck()
-// }
-
-// let authInfo = {
-//     email: emailInput.value,
-//     password: passInput.value
-// }
-
-// let localInfo = {
-//     //yes, no
-//     registerAsLocal: registerAsLocalCheck()
-// }
-
-//  let body = {
-//     travelerInfo,
-//     authInfo,
-//     localInfo
-// }

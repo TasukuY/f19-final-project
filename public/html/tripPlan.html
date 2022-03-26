@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>LocaLs</title>
+</head>
+<body>
+    <header>
+        <section id="logo">LocaLs</section>
+        <section id="page-link">home</section>
+        <section id="page-link">login</section>
+    </header>
+    <section id="tripPlan_title_description">
+        <br>
+        <form>
+            <label for="input">Title of the Trip Plan</label><br>
+            <input type="text" id="titleOfTripInput">
+            <br><br>
+            <textarea id="trip_descriptionTxtarea" placeholder="description of the trip"></textarea>
+            <br><br>
+            <button id="addTrip_title_description">Add Trip Title and Description</button>
+            <br><br><br>
+        </form> 
+    </section>
+
+    <section id="day_paln">
+        <br>
+        <form>
+            <h1>Day <span id="number_of_the_day"></span></h1>
+            <label for="input">date</label><br>
+            <input type="date" id="dateInput">
+            <br><br>
+            <label for="input">title of the day</label><br>
+            <input type="text" id="dayTitleInput">
+            <br><br>
+            <textarea id="day_descriptionTxtarea" placeholder="description of the day"></textarea>
+            <br><br>
+            <button id="addDayBtn">Add this day to the Trip</button>
+            <br><br><br>
+        </form> 
+    </section>
+
+    <section id="event_plan">
+        <br>
+        <form>
+            <h1>an event for Day <span id="number_of_the_day_for_event"></span></h1>
+            <label for="input">start time</label><br>
+            <input type="time" id="eventStartInput">
+            <br><br>
+            <label for="input">total hours</label><br>
+            <input type="text" id="event_total_hourInput">
+            <br><br>
+            <label for="input">event title</label><br>
+            <input type="text" id="event_titleInput">
+            <br><br>
+            <textarea id="event_descriptionTxtarea" placeholder="description of the event"></textarea>
+            <br><br>
+            <button id="addDayBtn">Add this event to day <span id="number_of_the_day_for_addBtn"></span></button>
+            <br><br><br>
+        </form> 
+    </section>
+
+    <footer>links</footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/tripPlan.js"></script>
+</body>
+</html>

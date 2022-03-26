@@ -21,6 +21,8 @@ module.exports = {
             drop table if exists countries;
             drop table if exists cities;
             drop table if exists new_trip_plan;
+            drop table if exists trip_plan;
+            drop table if exists day_plan;
 
             create table travelers (
                 traveler_id serial primary key, 
@@ -67,6 +69,22 @@ module.exports = {
                 include_transport_fee bool,
                 budget_detail text,
                 note text
+            );
+
+            create table trip_plan (
+                trip_plan_id serial primary key,
+                new_trip_plan_id integer not null references new_trip_plan(new_trip_plan_id),
+                local_id integer not null references locals(local_id),
+                trip_plan_title varchar(100),
+                trip_plan_description text
+            );
+
+            create table day_plan(
+                day_plan_id serial primary key,
+                trip_plan_id integer not null references trip_plan(trip_plan_id),
+                date_of_day date,
+                title_day varchar(100),
+                description_day text
             );
             
             INSERT INTO countries (country_name)
