@@ -104,12 +104,49 @@ module.exports = {
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
+    getTitleAndDescription: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM trip_plan WHERE trip_plan_id = (SELECT MAX(trip_plan_id) FROM trip_plan);
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
     addDay: (req, res) => {
         let {date_of_day, title_day, description_day} = req.body;
         sequelize.query(`
             insert into day_plan(trip_plan_id, date_of_day, title_day, description_day)
             values 
             ((SELECT trip_plan_id FROM trip_plan WHERE trip_plan_id = (SELECT MAX(trip_plan_id) FROM trip_plan)), '${date_of_day}', '${title_day}', '${description_day}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    getDayInfo: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan);
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    getDate: (req, res) => {
+        sequelize.query(`
+            SELECT date_of_day FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan);
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    addEvent: (req, res) => {
+        let {date, event_start_time, event_total_hours, event_title, event_detail, event_color} = req.body;
+        sequelize.query(`
+            insert into events (day_plan_id, event_start_time, event_total_hours, event_title, event_detail, event_color)
+            values((SELECT day_plan_id FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan)), TO_TIMESTAMP('${date} ${event_start_time}:00.00', 'YYYY-MM-DD HH24:MI:SS.FF'), ${event_total_hours}, '${event_title}', '${event_detail}', '${event_color}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    getEventInfo: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM events WHERE event_id = (SELECT MAX(event_id) FROM events);
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));

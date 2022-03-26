@@ -13,7 +13,7 @@
         <section id="page-link">home</section>
         <section id="page-link">login</section>
     </header>
-    <section id="tripPlan_title_description">
+    <section id="add_tripPlan_title_description">
         <br>
         <form>
             <label for="input">Title of the Trip Plan</label><br>
@@ -22,9 +22,11 @@
             <textarea id="trip_descriptionTxtarea" placeholder="description of the trip"></textarea>
             <br><br>
             <button id="addTrip_title_description">Add Trip Title and Description</button>
-            <br><br><br>
+            <br><br>
         </form> 
     </section>
+
+    <section id="show_tripPlan_title_description_sec"></section>
 
     <section id="day_paln">
         <br>
@@ -43,6 +45,9 @@
         </form> 
     </section>
 
+    <section id="show_day_title_sec"></section>
+    <section id="show_event_sec"></section>
+
     <section id="event_plan">
         <br>
         <form>
@@ -58,7 +63,21 @@
             <br><br>
             <textarea id="event_descriptionTxtarea" placeholder="description of the event"></textarea>
             <br><br>
-            <button id="addDayBtn">Add this event to day <span id="number_of_the_day_for_addBtn"></span></button>
+            <label for="colors">color for the event</label><br>
+            <select id="colorsSec">
+                <option id="default">select the color</option>
+                <option id="blue">blue</option>
+                <option id="red">red</option>
+                <option id="green">green</option>
+                <option id="yellow">yellow</option>
+                <option id="orange">orange</option>
+                <option id="purple">purple</option>
+                <option id="pink">pink</option>
+            </select>
+            <br><br>
+            <button id="addEventBtn">Add this event to day <span id="number_of_the_day_for_addBtn"></span></button>
+            <br><br><br>
+            <button id="addAnotherDayBtn">Add another day</button>
             <br><br><br>
         </form> 
     </section>

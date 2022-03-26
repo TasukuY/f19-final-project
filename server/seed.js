@@ -23,6 +23,7 @@ module.exports = {
             drop table if exists new_trip_plan;
             drop table if exists trip_plan;
             drop table if exists day_plan;
+            drop table if exists events;
 
             create table travelers (
                 traveler_id serial primary key, 
@@ -85,6 +86,16 @@ module.exports = {
                 date_of_day date,
                 title_day varchar(100),
                 description_day text
+            );
+
+            create table events (
+                event_id serial primary key,
+                day_plan_id integer not null references day_plan(day_plan_id),
+                event_start_time timestamp,
+                event_total_hours float, 
+                event_title varchar(100),
+                event_detail text,
+                event_color varchar(100)
             );
             
             INSERT INTO countries (country_name)
