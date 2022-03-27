@@ -194,7 +194,7 @@ function addAnotherDay(event){
                 let eventDetailNode = document.createTextNode(`${res.data[i].event_detail}`);
                 eventDetailP.appendChild(eventDetailNode);
                 let eventStartTimeP = document.createElement('p');
-                let eventStartTimeNode = document.createTextNode(`${res.data[i].event_start_time.slice(11, 16)}`);
+                let eventStartTimeNode = document.createTextNode(`@ ${res.data[i].event_start_time.slice(11, 16)}`);
                 eventStartTimeP.appendChild(eventStartTimeNode);
                 let eventTotalHorsNode = document.createTextNode(` for ${res.data[i].event_total_hours} hours`);
                 eventStartTimeP.append(eventTotalHorsNode);

@@ -14,13 +14,5 @@ function redirectToLogin(event){
     location.href = './login.html';
 }
 
-// function test(){
-//     axios.get(baseURL+'test')
-//     .then(res => {
-//         console.log(res.data)
-//     })
-//     .catch(err => console.log(err))
-// }
-
 redirectToSignupBtn.addEventListener('click', redirectToSignup);
 redirectToLoginP.addEventListener('click', redirectToLogin);
