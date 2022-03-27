@@ -86,11 +86,27 @@ function addNewUser(event){
     axios.post(baseURL+'register_user', body)
         .then(res => {
             //Keep the user data and do everything here
-            //AccontPage
-            signUp_body.style.display = none;
-            account_body.style.display = block;
+            //Account page js starts here
+            signUp_body.style.display = "none";
+            account_body.style.display = "block";
             let userObj = res.data[0];
-            console.log(userObj);
+            let usernameNode = document.createTextNode(`${userObj.username}`);
+            account_username_h1.innerHTML = '';
+            account_username_h1.appendChild(usernameNode);
+            let locationNode = document.createTextNode(`${userObj.city_name}, ${userObj.country_name}`);
+            account_user_location_h3.innerHTML = '';
+            account_user_location_h3.appendChild(locationNode);
+            let emailNode = document.createTextNode(`${userObj.email}`);
+            account_user_email_h3.innerHTML = '';
+            account_user_email_h3.appendChild(emailNode);
+            if(userObj.review){
+                let reviewNode = document.createElement(`${userObj.review}`);
+                account_review_h3.innerHTML = '';
+                account_review_h3.appendChild(reviewNode);
+                account_review_h3.style.display = "block";
+            }
+
+            //Account page js ends here
         })
         .catch(err => console.log(err));
 }
