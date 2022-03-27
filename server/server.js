@@ -4,7 +4,7 @@ const exp = require('constants');
 require('dotenv').config();
 
 const baseURL = '/localseelocaldo/';
-const {getMessages, registerUser, loginUser, loadCities, getCountryId, getCityID, postNewTripPlan, addTitleAndDescription, getTitleAndDescription, addDay, getDayInfo, getDate, addEvent, getEventInfo} = require('./controller');
+const {getMessages, registerUser, loginUser, loadCities, getCountryId, getCityID, postNewTripPlan, addTitleAndDescription, getTitleAndDescription, addDay, getDayInfo, getDate, addEvent, getEventInfo, getDaySchedule} = require('./controller');
 const {seed} = require('./seed');
 
 const app = express();
@@ -21,6 +21,7 @@ app.get(baseURL + 'get_date', getDate);
 app.get(baseURL + 'get_title_description', getTitleAndDescription);
 app.get(baseURL + 'get_dayInfo', getDayInfo);
 app.get(baseURL + 'get_eventInfo', getEventInfo);
+app.get(baseURL + 'day_schedule', getDaySchedule);
 
 app.post(baseURL + 'register_user', registerUser);
 app.post(baseURL + 'login', loginUser);

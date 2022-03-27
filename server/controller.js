@@ -150,6 +150,17 @@ module.exports = {
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
+    },
+    getDaySchedule: (req, res) => {
+        sequelize.query(`
+            SELECT *
+            FROM day_plan AS d
+            JOIN events AS e
+            ON d.day_plan_id = e.day_plan_id
+            WHERE d.day_plan_id = (SELECT day_plan_id FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan));
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
     }
 }
 
