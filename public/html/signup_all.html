@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>LocaLs</title>
+</head>
+<body>
+    <header>
+        <section id="logo">LocaLs</section>
+        <section id="page-link">home</section>
+        <section id="page-link">login</section>
+
+    </header>
+    <section id="body">
+        <form>
+            <label class="formLabel">First Name</label><br>
+            <input type="text" class="inputBox" id="firstnameInput"><br><br>
+            <label class="formLabel">Last Name</label><br>
+            <input type="text" class="inputBox" id="lastnameInput"><br><br>
+            <label class="formLabel">User Name</label><br>
+            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <label class="formLabel">Country</label><br>
+            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <label class="formLabel">City</label><br>
+            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <label class="formLabel">Email</label><br>
+            <input type="text" class="inputBox" id="emailInput"><br><br>
+
+            <label class="formLabel">Gender</label><br>
+            <input type="checkbox" class="checkbox" id="maleCheckbox" value="male">
+            <label id="maleCheckboxLabel">male</label><br>
+            <input type="checkbox" class="checkbox" id="femaleCheckbox" value="female">
+            <label id="femaleCheckboxLabel">female</label><br>
+            <input type="checkbox" class="checkbox" id="no-genderCheckbox" value="no_gender">
+            <label id="no-genderCheckboxLabel">prefer not to say</label><br><br>
+
+            <label class="formLabel">Password</label><br>
+            <input type="password" class="inputBox" id="passInput"><br>
+            <div id="passCheck"></div><br><br>
+            <label class="formLabel">Retype Password</label><br>
+            <input type="password" class="inputBox" id="re-passInput"><br>
+            <div id="re-passCheck"></div><br><br>
+
+            <label class="formLabel">Would you like to register as a local as well?</label><br>
+            <input type="checkbox" class="checkbox" id="registerAsLocal-y-checkbox" value="yes">
+            <label id="registerAsLocal-yLabel">Yes</label><br>
+            <input type="checkbox" class="checkbox" id="registerAsLocal-n-checkbox" value="no">
+            <label id="registerAsLocal-nLabel">No</label><br><br>
+            
+            <button id="registerBtn">Resister</button>
+            <p>already a member? <span class="redirect" id="redirectToLogin">click <span id="click-here">here</span> to login</span></p>
+        </form> 
+    </section>
+    <footer>links</footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/signup.js"></script>
+</body>
+</html>

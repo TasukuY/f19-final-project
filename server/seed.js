@@ -17,32 +17,35 @@ module.exports = {
         sequelize.query(`
             drop table if exists auth;
             drop table if exists locals;
-            drop table if exists travelers;
+            drop table if exists users;
             drop table if exists countries;
             drop table if exists cities;
-            drop table if exists new_trip_plan;
-            drop table if exists trip_plan;
-            drop table if exists day_plan;
+            drop table if exists trip_drafts;
+            drop table if exists trip_proposals;
+            drop table if exists day_plans;
             drop table if exists events;
+            drop table if exists trip_plans;
 
-            create table travelers (
+            create table users (
                 traveler_id serial primary key, 
-                first_name varchar(50), 
-                last_name varchar(50),
-                username varchar(50),
+                first_name varchar(100), 
+                last_name varchar(100),
+                username varchar(100),
+                country_name varchar(100),
+                city_name varchar(100),
                 gender varchar(10)
             );
 
             create table auth (
-                traveler_id integer not null references travelers(traveler_id),
+                user_id integer not null references users(user_id),
                 email varchar(100),
                 password varchar(100)
             );
 
             create table locals (
-                local_id serial primary key, 
-                traveler_id integer not null references travelers(traveler_id),
-                review float 
+                local_id serial primary key,
+                user_id integer not null references users(user_id),
+                review float
             );
 
             create table countries (
@@ -52,13 +55,12 @@ module.exports = {
 
             create table cities (
                 city_id serial primary key,
-                country_id integer not null references countries(country_id),
                 city_name varchar(100)
             );
 
-            create table new_trip_plan (
-                new_trip_plan_id serial primary key,
-                traveler_id integer not null references travelers(traveler_id),
+            create table trip_drafts (
+                trip_draft_id serial primary key,
+                user_id integer not null references users(user_id),
                 country_id integer not null references countries(country_id),
                 city_id integer not null references cities(city_id),
                 start_date date,
@@ -72,30 +74,37 @@ module.exports = {
                 note text
             );
 
-            create table trip_plan (
-                trip_plan_id serial primary key,
-                new_trip_plan_id integer not null references new_trip_plan(new_trip_plan_id),
+            create table trip_proposals (
+                trip_proposal_id serial primary key,
+                trip_draft_id integer not null references trip_drafts(trip_draft_id),
                 local_id integer not null references locals(local_id),
-                trip_plan_title varchar(100),
-                trip_plan_description text
+                proposal_title varchar(100),
+                proposal_description text
             );
 
-            create table day_plan(
+            create table day_plans(
                 day_plan_id serial primary key,
-                trip_plan_id integer not null references trip_plan(trip_plan_id),
-                date_of_day date,
-                title_day varchar(100),
-                description_day text
+                trip_proposal_id integer not null references trip_proposals(trip_proposal_id),
+                day_date date,
+                day_title varchar(100),
+                day_description text
             );
 
             create table events (
                 event_id serial primary key,
-                day_plan_id integer not null references day_plan(day_plan_id),
-                event_start_time timestamp,
-                event_total_hours float, 
+                day_plan_id integer not null references day_plans(day_plan_id),
+                start_time timestamp,
+                total_hours float, 
                 event_title varchar(100),
                 event_detail text,
                 event_color varchar(100)
+            );
+
+            create table trip_plans (
+                trip_plan_id serial primary key,
+                trip_proposal_id integer not null references trip_proposals(trip_proposal_id),
+                user_id integer not null references users(user_id),
+                local_id integer not null references locals(local_id)
             );
             
             INSERT INTO countries (country_name)
