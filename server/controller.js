@@ -10,46 +10,43 @@ const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
     }
 })
 
-let trip_plan_id = 0;
-let trip_plan_post_id = 0;
-let traveler_id = 0;
-
-let tempTripPlanObj = {
-    "trip_plan_id": trip_plan_id,
-    "trip_plan_post_id": trip_plan_post_id,
-    "traveler_id": traveler_id,
-    "trip_title": "",
-    "trip_description": "",
-    "day_plans": [
-        {
-            "date": "",
-            "events": [
-                {
-                    "event_title": "",
-                    "start_time": "",
-                    "total_hours": 0,
-                    "event_detail": "",
-                    "event_color": ""
-                }
-            ]
-        }
-    ]
-}
-
 module.exports = {
-    getMessages: (req, res) => {
-        res.status(200).send(trip_plans);
-    },
     registerUser: (req, res) => {
-        let {travelerInfo, authInfo, localInfo} = req.body;
-        sequelize.query(`
-            INSERT INTO travelers (first_name, last_name, username, gender)
-            VALUES ('${travelerInfo.first_name}', '${travelerInfo.last_name}', '${travelerInfo.username}', '${travelerInfo.gender}');
-            INSERT INTO auth (traveler_id, email, password)
-            VALUES ((SELECT traveler_id FROM travelers Where username='${travelerInfo.username}'), '${authInfo.email}', '${authInfo.password}');
-        `)
-        .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err));
+        let {userInfo, authInfo, localInfo} = req.body;
+        if(localInfo.registerAsLocal === 'yes'){
+            sequelize.query(`
+                INSERT INTO users (first_name, last_name, username, country_name, city_name, gender)
+                VALUES ('${userInfo.first_name}', '${userInfo.last_name}', '${userInfo.username}', '${userInfo.country_name}', '${userInfo.city_name}', '${userInfo.gender}');
+                INSERT INTO auth (user_id, email, password)
+                VALUES ((SELECT user_id FROM users Where username='${userInfo.username}'), '${authInfo.email}', '${authInfo.password}');
+                INSERT INTO locals (user_id, review) VALUES ((SELECT user_id FROM users Where username='${userInfo.username}'), 3.5);
+                
+                SELECT u.user_id, u.username, u.country_name, u.city_name, a.email, l.local_id, l.review FROM 
+                    users AS u 
+                        inner join 
+                    auth AS a
+                        ON u.user_id = a.user_id 
+                        inner join
+                    locals AS l
+                        on u.user_id = l.user_id
+                WHERE u.username = '${userInfo.username}' AND a.email = '${authInfo.email}';
+            `)
+            .then(dbRes => res.status(200).send(dbRes[0]))
+            .catch(err => console.log(err));
+        }else{
+            sequelize.query(`
+                INSERT INTO users (first_name, last_name, username, country_name, city_name, gender)
+                VALUES ('${userInfo.first_name}', '${userInfo.last_name}', '${userInfo.username}', '${userInfo.country_name}', '${userInfo.city_name}', '${userInfo.gender}');
+                INSERT INTO auth (user_id, email, password)
+                VALUES ((SELECT user_id FROM users Where username='${userInfo.username}'), '${authInfo.email}', '${authInfo.password}');
+
+                SELECT u.user_id, u.username, u.country_name, u.city_name, a.email FROM users AS u 
+                JOIN auth AS a ON u.user_id = a.user_id 
+                WHERE u.username = '${userInfo.username}' AND a.email = '${authInfo.email}';
+            `)
+            .then(dbRes => res.status(200).send(dbRes[0]))
+            .catch(err => console.log(err));
+        }
     },
     loginUser: (req, res) => {
         let {email, password} = req.body;

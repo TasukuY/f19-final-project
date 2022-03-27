@@ -6,12 +6,12 @@ const redirectToLoginP = document.getElementById('redirectToLogin');
 
 function redirectToSignup(event){
     event.preventDefault();
-    location.href = './signup.html';
+    location.href = './localseelocaldo_reg_all.html';
 }
 
 function redirectToLogin(event){
     event.preventDefault();
-    location.href = './login.html';
+    location.href = './localseelocaldo_log_all.html';
 }
 
 redirectToSignupBtn.addEventListener('click', redirectToSignup);

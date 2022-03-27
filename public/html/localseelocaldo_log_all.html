@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>LocaLs</title>
+</head>
+<body>
+    <header>
+        <section id="logo">LocaLs</section>
+        <section id="page-link">home</section>
+        <section id="page-link">login</section>
+
+    </header>
+    <section id="body">
+        <form> 
+            <label class="formLabel">Email</label><br>
+            <input type="text" id="emailInput"><br><br>
+            <label class="formLabel">Password</label><br>
+            <input type="password" id="passwordInput"><br>
+            <div id="passWrong"></div>
+
+            <br>
+            <button id="loginBtn">Login</button>
+            <p>forgot password? <span class="redirect" id="redirectToResetPass">click <span id="click-here">here</span> to reset</span></p>
+        </form> 
+    </section>
+    <footer>links</footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module" src="../js/localseelocaldo_log_all.js"></script>
+</body>
+</html>

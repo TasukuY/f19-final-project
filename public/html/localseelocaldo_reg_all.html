@@ -14,7 +14,8 @@
         <section id="page-link">login</section>
 
     </header>
-    <section id="body">
+
+    <section id="signUp_body">
         <form>
             <label class="formLabel">First Name</label><br>
             <input type="text" class="inputBox" id="firstnameInput"><br><br>
@@ -23,9 +24,9 @@
             <label class="formLabel">User Name</label><br>
             <input type="text" class="inputBox" id="usernameInput"><br><br>
             <label class="formLabel">Country</label><br>
-            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <input type="text" class="inputBox" id="countryInput"><br><br>
             <label class="formLabel">City</label><br>
-            <input type="text" class="inputBox" id="usernameInput"><br><br>
+            <input type="text" class="inputBox" id="cityInput"><br><br>
             <label class="formLabel">Email</label><br>
             <input type="text" class="inputBox" id="emailInput"><br><br>
 
@@ -39,7 +40,13 @@
 
             <label class="formLabel">Password</label><br>
             <input type="password" class="inputBox" id="passInput"><br>
-            <div id="passCheck"></div><br><br>
+            <div id="passCheck">
+                <p id="hasUpper">it has to contain at least 1 upper case. X</p>
+                <p id="hasLower">it has to contain at least 1 lower case. X</p>
+                <p id="hasNumber">it has to contain at least 1 number. X</p>
+                <p id="hasSpechar">it has to contain at least 1 special character.</p>
+                <p id="isValidLength">it has to be at least 8 or more characters. X</p>
+            </div><br><br>
             <label class="formLabel">Retype Password</label><br>
             <input type="password" class="inputBox" id="re-passInput"><br>
             <div id="re-passCheck"></div><br><br>
@@ -54,8 +61,30 @@
             <p>already a member? <span class="redirect" id="redirectToLogin">click <span id="click-here">here</span> to login</span></p>
         </form> 
     </section>
+
+    <section id="account_body">
+        <div id="account_background_img_div">
+            <img src="../img/background_default.jpeg" alt="background_img" id="account_background_img">
+            <input type="file" id="account_background_img_file">
+            <label for="file" class="uploadBtn" id="account_background_img_uploadBtn">Choose Photo</label>
+        </div>
+        <div id="account_profile_pic_div">
+            <img src="../img/profile_default.jpeg" alt="profile_img" id="account_profile_pic">
+            <input type="file" id="account_profile_pic_file">
+            <label for="file" class="account_profile_pic_uploadBtn">Choose Photo</label>
+        </div>
+        <div id="accont_username_div"><h1 id="account_username_h1">username</h1></div>
+        <div id="account_user_location_div"><h3 id="account_user_location_h3">city, country</h3></div>
+        <div id="account_user_email_div"><h3 id="account_user_email_h3">email</h3></div>
+        <div id="account_review_div"><h3 id="account_review_h3">review</h3></div>
+        <div id="account_post_new_trip_div"><h3 id="account_post_new_tripBtn">Post New Trip Plan</h3></div>
+        <div id="account_pending_trip_plan_div"><h3 id="account_pending_trip_plan_h3">Pending Trip Plan</h3></div>
+        <div id="account_trip_plan_div"><h3 id="account_trip_plan_h3">Trip Plan</h3></div>
+        <div id="account_past_trip_plan_div"><h3 id="account_past_trip_plan_h3">Past Trip Plan</h3></div>
+    </section>
+
     <footer>links</footer>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="../js/signup.js"></script>
+    <script src="../js/localseelocaldo_reg_all.js"></script>
 </body>
 </html>
