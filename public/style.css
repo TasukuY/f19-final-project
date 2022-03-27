@@ -18,14 +18,18 @@ footer {
     cursor: pointer;
 }
 
-#signUp_body {
+/* #signUp_body {
     display: block;
 }
 
 #account_body {
     display: none;
-}
+} */
 
 #account_review_h3 {
     display: none;
+}
+
+#account_post_new_trip_div{
+    background-color: aqua;
 }

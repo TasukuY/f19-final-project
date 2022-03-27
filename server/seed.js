@@ -55,6 +55,7 @@ module.exports = {
 
             create table cities (
                 city_id serial primary key,
+                country_id integer not null references countries(country_id),
                 city_name varchar(100)
             );
 

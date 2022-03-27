@@ -52,6 +52,23 @@ const account_past_trip_plan_div = document.getElementById('account_past_trip_pl
 const account_past_trip_plan_h3 = document.getElementById('account_past_trip_plan_h3');
 //Account page html elements' connection ends here
 
+//New Trip Draft Form page html elements' connection starts here
+const new_trip_draft_body = document.getElementById('new_trip_draft_body');
+const countriesSec = document.getElementById('countriesSec');
+const citiesSec = document.getElementById('citiesSec');
+const startDateInput = document.getElementById('startDateInput');
+const endDateInput = document.getElementById('endDateInput');
+const numberOfPeopleInput = document.getElementById('numberOfPeopleInput');
+const budgetInput = document.getElementById('budgetInput');
+const includeHotelCheck = document.getElementById('includeHotelCheck');
+const includeMealCheck = document.getElementById('includeMealCheck');
+const includeTranspotationCheck = document.getElementById('includeTranspotationCheck');
+const budgetDetailTextarea = document.getElementById('budgetDetailTextarea');
+const noteTextarea = document.getElementById('noteTextarea');
+const trip_draft_nextBtn = document.getElementById('trip_draft_nextBtn');
+const backToAccount = document.getElementById('backToAccount');
+//New Trip Draft Form page html elements' connection ends here
+
 //SignUp page functions starts here
 //default page setting
 registerBtn.disabled = true;
@@ -87,8 +104,8 @@ function addNewUser(event){
         .then(res => {
             //Keep the user data and do everything here
             //Account page js starts here
-            signUp_body.style.display = "none";
-            account_body.style.display = "block";
+            // signUp_body.style.display = "none";
+            // account_body.style.display = "block";
             let userObj = res.data[0];
             let usernameNode = document.createTextNode(`${userObj.username}`);
             account_username_h1.innerHTML = '';
@@ -100,15 +117,103 @@ function addNewUser(event){
             account_user_email_h3.innerHTML = '';
             account_user_email_h3.appendChild(emailNode);
             if(userObj.review){
-                let reviewNode = document.createElement(`${userObj.review}`);
+                let reviewNode = document.createTextNode(`${userObj.review}`);
                 account_review_h3.innerHTML = '';
                 account_review_h3.appendChild(reviewNode);
                 account_review_h3.style.display = "block";
             }
-
             //Account page js ends here
+            //create a new trip plan draft
+            account_post_new_trip_div.addEventListener('click', () => {
+                event.preventDefault();
+                console.log('clicked!!');
+            });
+            
+            countriesSec.onchange = (event) => {
+                event.preventDefault();
+                let country_name = countriesSec.value; 
+                axios.get(baseURL + `load_cities/${country_name}`)
+                    .then(res => {
+                        if(res.data[0] === undefined){
+                            let selectOpt = document.createElement('option');
+                            let selectNode = document.createTextNode('select the city');
+                            let cityOpt = document.createElement('option');
+                            let cityNode = document.createTextNode('No cities registered in this country');
+                            selectOpt.appendChild(selectNode);
+                            cityOpt.appendChild(cityNode);
+                            citiesSec.innerHTML = '';
+                            citiesSec.appendChild(selectOpt);
+                            citiesSec.appendChild(cityOpt);
+                        }else{
+                            citiesSec.innerHTML = '';
+                            let selectOpt = document.createElement('option');
+                            let selectNode = document.createTextNode('select the city');
+                            selectOpt.appendChild(selectNode);
+                            citiesSec.appendChild(selectOpt);
+                            for(let i = 0; i < res.data.length; i++){
+                                let cityOpt = document.createElement('option');
+                                let cityNode = document.createTextNode(`${res.data[i].city_name}`);
+                                cityOpt.appendChild(cityNode);
+                                citiesSec.appendChild(cityOpt);
+                            }
+                        }
+                    })
+                    .catch(err => console.log(err));
+            }
+            
+            trip_draft_nextBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                //get countryID
+                axios.get(baseURL + `getCountryID/${countriesSec.value}`)
+                    .then(res => {
+                        let countryID = res.data[0].country_id
+                        //get cityID
+                        axios.get(baseURL + `getCityID/${citiesSec.value}`)
+                            .then(res => {
+                                let cityID = res.data[0].city_id
+                                let body = {
+                                    user_id: userObj.user_id,
+                                    country_id: countryID,
+                                    city_id: cityID,
+                                    start_date: startDateInput.value,
+                                    end_date: endDateInput.value,
+                                    num_of_ppl: numberOfPeopleInput.value,
+                                    budget: budgetInput.value,
+                                    include_hotel_fee: includeHotelCheck.checked,
+                                    include_meal_fee: includeMealCheck.checked,
+                                    include_transport_fee: includeTranspotationCheck.checked,
+                                    budget_detail: budgetDetailTextarea.value,
+                                    note: noteTextarea.value
+                                }
+            
+                                axios.post(baseURL + 'post_new_trip_draft', body)
+                                    .then(res => {
+                                        // location.href = './tripPlanConfirmation.html'
+                                        clearTripDraftForm();
+                                        console.log('trip draft added!!!!!!!');
+                                    }) 
+                                    .catch(err => console.log(err));
+                            })
+                            .catch(err => console.log(err))
+                    })
+                    .catch(err => console.log(err))   
+            })
+            //new trip draft js ends here
         })
         .catch(err => console.log(err));
+}
+function clearTripDraftForm(){
+    countriesSec.value = '';
+    citiesSec.value = '';
+    startDateInput.value = '';
+    endDateInput.value = '';
+    numberOfPeopleInput.value = '';
+    budgetInput.value = '';
+    includeHotelCheck.checked = false;
+    includeMealCheck.checked = false;
+    includeTranspotationCheck.checked = false;
+    budgetDetailTextarea.value = '';
+    noteTextarea.value = '';
 }
 function genderCheck(){
 
