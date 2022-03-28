@@ -93,17 +93,23 @@ module.exports = {
         .catch(err => console.log(err));
     },
     addTitleAndDescription: (req, res) => {
-        let {trip_title, trip_description} = req.body;
+        let {trip_draft_id, local_id, trip_title, trip_description} = req.body;
         sequelize.query(`
-            insert into trip_plan (new_trip_plan_id, local_id, trip_plan_title, trip_plan_description)
-            values(1, 1, '${trip_title}', '${trip_description}');        
+            insert into trip_proposals (trip_draft_id, local_id, proposal_title, proposal_description)
+            values (${trip_draft_id}, ${local_id}, '${trip_title}', '${trip_description}');
+            SELECT * FROM trip_proposals 
+            WHERE trip_draft_id = ${trip_draft_id}
+            AND local_id = ${local_id}
+            AND proposal_title = '${trip_title}' 
+            AND proposal_description = '${trip_description}'; 
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
     getTitleAndDescription: (req, res) => {
+        let {trip_draft_id, local_id, trip_title, trip_description} = req.body;
         sequelize.query(`
-            SELECT * FROM trip_plan WHERE trip_plan_id = (SELECT MAX(trip_plan_id) FROM trip_plan);
+            
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
@@ -178,21 +184,27 @@ module.exports = {
     get_trip_requests_from_travelers: (req, res) => {
         let {city_name} = req.params;
         sequelize.query(`
-        SELECT u.username, t.trip_draft_id, t.user_id, t.start_date, t.end_date, t.num_of_ppl, t.budget, t.include_hotel_fee, t.include_meal_fee, include_transport_fee, t.budget_detail, t.note, co.country_name, ci.city_name 
-            FROM 
-            trip_drafts AS t 
-                inner join 
-            cities AS ci
-                on t.city_id = ci.city_id 
-                inner join
-            countries As co
-                on ci.country_id = co.country_id
-                inner join
-            users AS u
-                on t.user_id = u.user_id
-        WHERE ci.city_name = '${city_name}';          
-
-
+            SELECT u.username, t.trip_draft_id, t.user_id, t.start_date, t.end_date, t.num_of_ppl, t.budget, t.include_hotel_fee, t.include_meal_fee, include_transport_fee, t.budget_detail, t.note, co.country_name, ci.city_name 
+                FROM 
+                trip_drafts AS t 
+                    inner join 
+                cities AS ci
+                    on t.city_id = ci.city_id 
+                    inner join
+                countries As co
+                    on ci.country_id = co.country_id
+                    inner join
+                users AS u
+                    on t.user_id = u.user_id
+            WHERE ci.city_name = '${city_name}';          
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_local_id: (req, res) => {
+        let {user_id} = req.params;
+        sequelize.query(`
+            select * from locals where user_id = ${user_id};
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
