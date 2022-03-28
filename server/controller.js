@@ -115,11 +115,11 @@ module.exports = {
         .catch(err => console.log(err));
     },
     addDay: (req, res) => {
-        let {date_of_day, title_day, description_day} = req.body;
+        let {trip_proposal_id, day_date, day_title, day_description} = req.body;
         sequelize.query(`
-            insert into day_plan(trip_plan_id, date_of_day, title_day, description_day)
-            values 
-            ((SELECT trip_plan_id FROM trip_plan WHERE trip_plan_id = (SELECT MAX(trip_plan_id) FROM trip_plan)), '${date_of_day}', '${title_day}', '${description_day}');
+            insert into day_plans(trip_proposal_id, day_date, day_title, day_description)
+            values (${trip_proposal_id}, '${day_date}', '${day_title}', '${day_description}');
+            select * from day_plans where trip_proposal_id = ${trip_proposal_id} AND day_date = '${day_date}' AND day_title = '${day_title}' AND day_description = '${day_description}';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));

@@ -96,6 +96,7 @@ const colorsSec = document.getElementById('colorsSec');
 const addAnotherDayBtn = document.getElementById('addAnotherDayBtn');
 const send_to_travelerBtn = document.getElementById('send_to_travelerBtn');
 const trip_proposal_show_trip_draft_div = document.getElementById('trip_proposal_show_trip_draft_div');
+const day_paln_sec = document.getElementById('day_paln_sec');
 let dayNum = 1;
 let dayNum2 = 0;
 //Trip plan proposal Form page html elements' connection ends here
@@ -338,13 +339,43 @@ function addNewUser(event){
                                             .then(res => {
                                                 let titleH = document.createElement('h1');
                                                 let ttileText = document.createTextNode(`${res.data[0].proposal_title}`);
-                                                let descriptionH = document.createElement('h1');
+                                                let descriptionH = document.createElement('h3');
                                                 let descriptionText = document.createTextNode(`${res.data[0].proposal_description}`);
                                                 titleH.appendChild(ttileText);
                                                 descriptionH.appendChild(descriptionText);
                                                 show_tripPlan_title_description_sec.appendChild(titleH);
                                                 show_tripPlan_title_description_sec.appendChild(descriptionText);
                                                 add_tripPlan_title_description.style.display = "none";
+                                                //add a day_plan
+                                                let trip_proposal_id = res.data[0].trip_proposal_id;
+                                                addDayBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    let day_date = dateInput.value;
+                                                    let day_title = dayTitleInput.value;
+                                                    let day_description = day_descriptionTxtarea.value;
+                                                    let body = {
+                                                        trip_proposal_id,
+                                                        day_date,
+                                                        day_title,
+                                                        day_description
+                                                    }
+                                                    axios.post(baseURL + 'add_day', body)
+                                                        .then(res => {
+                                                            console.log(res.data);
+                                                            let titleH = document.createElement('h4');
+                                                            let ttileText = document.createTextNode(`${res.data[0].day_title}`);
+                                                            let descriptionH = document.createElement('h6');
+                                                            let descriptionText = document.createTextNode(`${res.data[0].day_description}`);
+                                                            titleH.appendChild(ttileText);
+                                                            descriptionH.appendChild(descriptionText);
+                                                            currently_makind_day_schedule_sec.appendChild(titleH);
+                                                            currently_makind_day_schedule_sec.appendChild(descriptionH);
+                                                            day_paln_sec.style.display = "none";
+                                                            //add an event 
+                                                            let day_plan_id = res.data[0].day_plan_id;
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                });
                                             })
                                             .catch(err => console.log('add title description ERROR' + err));
                                     })
