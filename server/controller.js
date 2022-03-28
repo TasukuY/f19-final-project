@@ -174,6 +174,23 @@ module.exports = {
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
+    },
+    get_trip_requests_from_travelers: (req, res) => {
+        let {city_name} = req.params;
+        sequelize.query(`
+            SELECT u.username, t.trip_draft_id, t.user_id, t.start_date, t.end_date, t.num_of_ppl, t.budget, t.include_hotel_fee, t.include_meal_fee, include_transport_fee, t.budget_detail, t.note, c.city_name 
+                FROM 
+                trip_drafts AS t 
+                    inner join 
+                cities AS c
+                    on t.city_id = c.city_id 
+                    inner join
+                users AS u
+                    on t.user_id = u.user_id
+            WHERE c.city_name = 'Soul'; 
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
     }
 }
 

@@ -23,7 +23,7 @@ footer {
 }
 
 #account_body {
-    display: block;
+    display: none;
 }
 
 #account_review_h3 {
@@ -40,6 +40,10 @@ footer {
 
 #trip_draft_posted_confirmation_body {
     display: none;
+}
+
+#trip_proposal_body {
+    display: block;
 }
 
 #account_post_new_trip_div{
