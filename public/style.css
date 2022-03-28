@@ -18,15 +18,27 @@ footer {
     cursor: pointer;
 }
 
-/* #signUp_body {
+#signUp_body {
     display: block;
 }
 
 #account_body {
-    display: none;
-} */
+    display: block;
+}
 
 #account_review_h3 {
+    display: none;
+}
+
+#account_see_trip_request_from_travelers_div {
+    display: none;
+}
+
+#new_trip_draft_body {
+    display: none;
+}
+
+#trip_draft_posted_confirmation_body {
     display: none;
 }
 

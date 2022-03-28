@@ -50,6 +50,7 @@ const account_trip_plan_div = document.getElementById('account_trip_plan_div');
 const account_trip_plan_h3 = document.getElementById('account_trip_plan_h3');
 const account_past_trip_plan_div = document.getElementById('account_past_trip_plan_div');
 const account_past_trip_plan_h3 = document.getElementById('account_past_trip_plan_h3');
+const account_see_trip_request_from_travelers_div = document.getElementById('account_see_trip_request_from_travelers_div');
 //Account page html elements' connection ends here
 
 //New Trip Draft Form page html elements' connection starts here
@@ -66,7 +67,9 @@ const includeTranspotationCheck = document.getElementById('includeTranspotationC
 const budgetDetailTextarea = document.getElementById('budgetDetailTextarea');
 const noteTextarea = document.getElementById('noteTextarea');
 const trip_draft_nextBtn = document.getElementById('trip_draft_nextBtn');
-const backToAccount = document.getElementById('backToAccount');
+const draft_form_backToAccount = document.getElementById('draft_form_backToAccount');
+const trip_draft_posted_confirmation_body = document.getElementById('trip_draft_posted_confirmation_body');
+const confirmation_backToAccount = document.getElementById('confirmation_backToAccount');
 //New Trip Draft Form page html elements' connection ends here
 
 //SignUp page functions starts here
@@ -104,8 +107,9 @@ function addNewUser(event){
         .then(res => {
             //Keep the user data and do everything here
             //Account page js starts here
-            // signUp_body.style.display = "none";
-            // account_body.style.display = "block";
+            
+            signUp_body.style.display = "none";
+            account_body.style.display = "block";
             let userObj = res.data[0];
             let usernameNode = document.createTextNode(`${userObj.username}`);
             account_username_h1.innerHTML = '';
@@ -121,14 +125,128 @@ function addNewUser(event){
                 account_review_h3.innerHTML = '';
                 account_review_h3.appendChild(reviewNode);
                 account_review_h3.style.display = "block";
+                account_see_trip_request_from_travelers_div.style.display = "block";
             }
+            //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
+            axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
+                .then(res => {
+                    if(res.data.length >= 1){
+                        for(let i = 0; i < res.data.length; i++){
+                            let trip_draftObj = res.data[i];
+                            let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
+                            let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
+                            let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
+                            
+                            let new_trip_draft_div = document.createElement('div');
+                            let new_trip_draft_title_h5 = document.createElement('h5');
+                            let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
+                            new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
+                            new_trip_draft_div.appendChild(new_trip_draft_title_h5);
+                            let new_trip_draft_date_P = document.createElement('p');
+                            let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
+                            new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
+                            new_trip_draft_div.appendChild(new_trip_draft_date_P);
+                            let num_of_pple_P = document.createElement('p');
+                            let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
+                            num_of_pple_P.appendChild(num_of_pple_node);
+                            new_trip_draft_div.appendChild(num_of_pple_P);
+                            let budget_per_person_P = document.createElement('p');
+                            let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
+                            budget_per_person_P.appendChild(budget_per_person_node);
+                            new_trip_draft_div.appendChild(budget_per_person_P);
+                            let include_hotel_fee_P = document.createElement('p');
+                            let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
+                            include_hotel_fee_P.appendChild(include_hotel_fee_node);
+                            new_trip_draft_div.appendChild(include_hotel_fee_P);
+                            let include_meal_fee_P = document.createElement('p');
+                            let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
+                            include_meal_fee_P.appendChild(include_meal_fee_node);
+                            new_trip_draft_div.appendChild(include_meal_fee_P);
+                            let include_transport_fee_P = document.createElement('p');
+                            let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
+                            include_transport_fee_P.appendChild(include_transport_fee_node);
+                            new_trip_draft_div.appendChild(include_transport_fee_P);
+                            let budget_detail_P = document.createElement('p');
+                            let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
+                            budget_detail_P.appendChild(budget_detail_Node);
+                            new_trip_draft_div.appendChild(budget_detail_P);
+                            let note_P = document.createElement('p');
+                            let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
+                            note_P.appendChild(note_node);
+                            new_trip_draft_div.appendChild(note_P);
+                            account_pending_trip_plan_div.appendChild(new_trip_draft_div);
+                        }
+                    }
+                })
+                .catch(err => console.log(err));
+
+                account_pending_trip_plan_div
+
+
             //Account page js ends here
-            //create a new trip plan draft
-            account_post_new_trip_div.addEventListener('click', () => {
+            //create a new trip plan draft -> show trip draft form
+            account_post_new_trip_div.addEventListener('click', (event) => {
                 event.preventDefault();
-                console.log('clicked!!');
+                account_body.style.display = "none";
+                new_trip_draft_body.style.display = "block";
             });
-            
+            draft_form_backToAccount.addEventListener('click', (event) => {
+                event.preventDefault();
+                new_trip_draft_body.style.display = "none";
+                account_body.style.display = "block";
+                //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
+                axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
+                    .then(res => {
+                        if(res.data.length >= 1){
+                            for(let i = 0; i < res.data.length; i++){
+                                let trip_draftObj = res.data[i];
+                                let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
+                                let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
+                                let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
+                                
+                                let new_trip_draft_div = document.createElement('div');
+                                let new_trip_draft_title_h5 = document.createElement('h5');
+                                let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
+                                new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
+                                new_trip_draft_div.appendChild(new_trip_draft_title_h5);
+                                let new_trip_draft_date_P = document.createElement('p');
+                                let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
+                                new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
+                                new_trip_draft_div.appendChild(new_trip_draft_date_P);
+                                let num_of_pple_P = document.createElement('p');
+                                let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
+                                num_of_pple_P.appendChild(num_of_pple_node);
+                                new_trip_draft_div.appendChild(num_of_pple_P);
+                                let budget_per_person_P = document.createElement('p');
+                                let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
+                                budget_per_person_P.appendChild(budget_per_person_node);
+                                new_trip_draft_div.appendChild(budget_per_person_P);
+                                let include_hotel_fee_P = document.createElement('p');
+                                let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
+                                include_hotel_fee_P.appendChild(include_hotel_fee_node);
+                                new_trip_draft_div.appendChild(include_hotel_fee_P);
+                                let include_meal_fee_P = document.createElement('p');
+                                let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
+                                include_meal_fee_P.appendChild(include_meal_fee_node);
+                                new_trip_draft_div.appendChild(include_meal_fee_P);
+                                let include_transport_fee_P = document.createElement('p');
+                                let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
+                                include_transport_fee_P.appendChild(include_transport_fee_node);
+                                new_trip_draft_div.appendChild(include_transport_fee_P);
+                                let budget_detail_P = document.createElement('p');
+                                let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
+                                budget_detail_P.appendChild(budget_detail_Node);
+                                new_trip_draft_div.appendChild(budget_detail_P);
+                                let note_P = document.createElement('p');
+                                let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
+                                note_P.appendChild(note_node);
+                                new_trip_draft_div.appendChild(note_P);
+                                account_pending_trip_plan_div.appendChild(new_trip_draft_div);
+                            }
+                        }
+                    })
+                    .catch(err => console.log(err));
+            });
             countriesSec.onchange = (event) => {
                 event.preventDefault();
                 let country_name = countriesSec.value; 
@@ -188,9 +306,66 @@ function addNewUser(event){
             
                                 axios.post(baseURL + 'post_new_trip_draft', body)
                                     .then(res => {
-                                        // location.href = './tripPlanConfirmation.html'
                                         clearTripDraftForm();
-                                        console.log('trip draft added!!!!!!!');
+                                        new_trip_draft_body.style.display = "none";
+                                        trip_draft_posted_confirmation_body.style.display = "block";
+                                        confirmation_backToAccount.addEventListener('click', (event) => {
+                                            event.preventDefault();
+                                            trip_draft_posted_confirmation_body.style.display = "none";
+                                            account_body.style.display = "block";
+                                            //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
+                                            axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
+                                                .then(res => {
+                                                    if(res.data.length >= 1){
+                                                        for(let i = 0; i < res.data.length; i++){
+                                                            let trip_draftObj = res.data[i];
+                                                            let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
+                                                            let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
+                                                            let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
+                                                            
+                                                            let new_trip_draft_div = document.createElement('div');
+                                                            let new_trip_draft_title_h5 = document.createElement('h5');
+                                                            let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
+                                                            new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
+                                                            new_trip_draft_div.appendChild(new_trip_draft_title_h5);
+                                                            let new_trip_draft_date_P = document.createElement('p');
+                                                            let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
+                                                            new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
+                                                            new_trip_draft_div.appendChild(new_trip_draft_date_P);
+                                                            let num_of_pple_P = document.createElement('p');
+                                                            let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
+                                                            num_of_pple_P.appendChild(num_of_pple_node);
+                                                            new_trip_draft_div.appendChild(num_of_pple_P);
+                                                            let budget_per_person_P = document.createElement('p');
+                                                            let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
+                                                            budget_per_person_P.appendChild(budget_per_person_node);
+                                                            new_trip_draft_div.appendChild(budget_per_person_P);
+                                                            let include_hotel_fee_P = document.createElement('p');
+                                                            let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
+                                                            include_hotel_fee_P.appendChild(include_hotel_fee_node);
+                                                            new_trip_draft_div.appendChild(include_hotel_fee_P);
+                                                            let include_meal_fee_P = document.createElement('p');
+                                                            let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
+                                                            include_meal_fee_P.appendChild(include_meal_fee_node);
+                                                            new_trip_draft_div.appendChild(include_meal_fee_P);
+                                                            let include_transport_fee_P = document.createElement('p');
+                                                            let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
+                                                            include_transport_fee_P.appendChild(include_transport_fee_node);
+                                                            new_trip_draft_div.appendChild(include_transport_fee_P);
+                                                            let budget_detail_P = document.createElement('p');
+                                                            let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
+                                                            budget_detail_P.appendChild(budget_detail_Node);
+                                                            new_trip_draft_div.appendChild(budget_detail_P);
+                                                            let note_P = document.createElement('p');
+                                                            let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
+                                                            note_P.appendChild(note_node);
+                                                            new_trip_draft_div.appendChild(note_P);
+                                                            account_pending_trip_plan_div.appendChild(new_trip_draft_div);
+                                                        }
+                                                    }
+                                                })
+                                                .catch(err => console.log(err));
+                                        });
                                     }) 
                                     .catch(err => console.log(err));
                             })
@@ -198,7 +373,7 @@ function addNewUser(event){
                     })
                     .catch(err => console.log(err))   
             })
-            //new trip draft js ends here
+
         })
         .catch(err => console.log(err));
 }
