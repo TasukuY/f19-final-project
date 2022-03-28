@@ -137,9 +137,6 @@ function addNewUser(event){
 
     axios.post(baseURL+'register_user', body)
         .then(res => {
-            //Keep the user data and do everything here
-            //Account page js starts here
-            
             signUp_body.style.display = "none";
             account_body.style.display = "block";
             let userObj = res.data[0];
@@ -262,29 +259,55 @@ function addNewUser(event){
                                 trip_request_div.id = 'trip_request_from_travelers_card'
                                 account_trip_request_from_travelers_div.appendChild(trip_request_div);
                             }
-
-                            console.log(account_trip_request_from_travelers_div.children);
-
-                            account_trip_request_from_travelers_div.children[1].addEventListener('click', (event) => {
-                                console.log('clicked!!!!!!');
-                                let testH1 = document.createElement('h1');
-                                let testNode = document.createTextNode( account_trip_request_from_travelers_div.children[1].username);
-                                testH1.appendChild(testNode);
-                                trip_proposal_show_trip_draft_div.appendChild(testH1);
-                            })
-
-                            
-                            // for(let i = 0; i < account_trip_request_from_travelers_div.children.length; i++){
-                            //     account_trip_request_from_travelers_div.children[i].addEventListener('click', (event) => {
-                            //         event.preventDefault()
-                            //         account_body.style.display = "none";
-                            //         trip_proposal_body.display = "block";
-                            //         //show the trip_draft at the top
-                            //         console.log(account_trip_request_from_travelers_div.children[i].username);
-
-
-                            //     })
-                            // }  
+                            //show trip draft at the top of trip proposal form page
+                            for(let i = 1; i < account_trip_request_from_travelers_div.children.length; i++){
+                                account_trip_request_from_travelers_div.children[i].addEventListener('click', (event) => {
+                                    event.preventDefault()
+                                    account_body.style.display = "none";
+                                    trip_proposal_body.display = "block";
+                                    //make trip draft elements
+                                    let trip_requestArr = account_trip_request_from_travelers_div.children[i].children;
+                                    let trip_request_div = document.createElement('div');
+                                    let trip_req_title_h5 = document.createElement('h5');
+                                    let trip_req_title_node = document.createTextNode(`${trip_requestArr[0].innerText}`);
+                                    trip_req_title_h5.appendChild(trip_req_title_node);
+                                    trip_request_div.appendChild(trip_req_title_h5);
+                                    let rip_req_date_P = document.createElement('p');
+                                    let rip_req_date_node = document.createTextNode(`${trip_requestArr[1].innerText}`);
+                                    rip_req_date_P.appendChild(rip_req_date_node);
+                                    trip_request_div.appendChild(rip_req_date_P);
+                                    let num_of_pple_P = document.createElement('p');
+                                    let num_of_pple_node = document.createTextNode(`${trip_requestArr[2].innerText}`);
+                                    num_of_pple_P.appendChild(num_of_pple_node);
+                                    trip_request_div.appendChild(num_of_pple_P);
+                                    let budget_per_person_P = document.createElement('p');
+                                    let budget_per_person_node = document.createTextNode(`${trip_requestArr[3].innerText}`);
+                                    budget_per_person_P.appendChild(budget_per_person_node);
+                                    trip_request_div.appendChild(budget_per_person_P);
+                                    let include_hotel_fee_P = document.createElement('p');
+                                    let include_hotel_fee_node = document.createTextNode(`${trip_requestArr[4].innerText}`);
+                                    include_hotel_fee_P.appendChild(include_hotel_fee_node);
+                                    trip_request_div.appendChild(include_hotel_fee_P);
+                                    let include_meal_fee_P = document.createElement('p');
+                                    let include_meal_fee_node = document.createTextNode(`${trip_requestArr[5].innerText}`);
+                                    include_meal_fee_P.appendChild(include_meal_fee_node);
+                                    trip_request_div.appendChild(include_meal_fee_P);
+                                    let include_transport_fee_P = document.createElement('p');
+                                    let include_transport_fee_node = document.createTextNode(`${trip_requestArr[6].innerText}`);
+                                    include_transport_fee_P.appendChild(include_transport_fee_node);
+                                    trip_request_div.appendChild(include_transport_fee_P);
+                                    let budget_detail_P = document.createElement('p');
+                                    let budget_detail_Node = document.createTextNode(`${trip_requestArr[7].innerText}`);
+                                    budget_detail_P.appendChild(budget_detail_Node);
+                                    trip_request_div.appendChild(budget_detail_P);
+                                    let note_P = document.createElement('p');
+                                    let note_node = document.createTextNode(`${trip_requestArr[8].innerText}`);
+                                    note_P.appendChild(note_node);
+                                    trip_request_div.appendChild(note_P);
+                                    trip_request_div.id = 'trip_request_from_travelers_card'
+                                    trip_proposal_show_trip_draft_div.appendChild(trip_request_div);
+                                })
+                            }  
                         }
                        
                     })

@@ -178,16 +178,21 @@ module.exports = {
     get_trip_requests_from_travelers: (req, res) => {
         let {city_name} = req.params;
         sequelize.query(`
-            SELECT u.username, t.trip_draft_id, t.user_id, t.start_date, t.end_date, t.num_of_ppl, t.budget, t.include_hotel_fee, t.include_meal_fee, include_transport_fee, t.budget_detail, t.note, c.city_name 
-                FROM 
-                trip_drafts AS t 
-                    inner join 
-                cities AS c
-                    on t.city_id = c.city_id 
-                    inner join
-                users AS u
-                    on t.user_id = u.user_id
-            WHERE c.city_name = 'Soul'; 
+        SELECT u.username, t.trip_draft_id, t.user_id, t.start_date, t.end_date, t.num_of_ppl, t.budget, t.include_hotel_fee, t.include_meal_fee, include_transport_fee, t.budget_detail, t.note, co.country_name, ci.city_name 
+            FROM 
+            trip_drafts AS t 
+                inner join 
+            cities AS ci
+                on t.city_id = ci.city_id 
+                inner join
+            countries As co
+                on ci.country_id = co.country_id
+                inner join
+            users AS u
+                on t.user_id = u.user_id
+        WHERE ci.city_name = '${city_name}';          
+
+
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));

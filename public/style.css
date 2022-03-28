@@ -43,7 +43,7 @@ footer {
 }
 
 #trip_proposal_body {
-    display: block;
+    display: none;
 }
 
 #account_post_new_trip_div{
