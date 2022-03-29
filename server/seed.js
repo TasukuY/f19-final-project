@@ -27,7 +27,7 @@ module.exports = {
             drop table if exists trip_plans;
 
             create table users (
-                traveler_id serial primary key, 
+                user_id serial primary key, 
                 first_name varchar(100), 
                 last_name varchar(100),
                 username varchar(100),

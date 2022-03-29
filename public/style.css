@@ -46,6 +46,10 @@ footer {
     display: none;
 }
 
+#trip_proposal_posted_confirmation_body {
+    display: none;
+}
+
 #account_post_new_trip_div{
     background-color: aqua;
 }

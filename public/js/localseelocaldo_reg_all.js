@@ -1,3 +1,4 @@
+const { default: axios } = require("axios");
 
 const baseURL = `http://localhost:5100/localseelocaldo/`;
 
@@ -97,6 +98,8 @@ const addAnotherDayBtn = document.getElementById('addAnotherDayBtn');
 const send_to_travelerBtn = document.getElementById('send_to_travelerBtn');
 const trip_proposal_show_trip_draft_div = document.getElementById('trip_proposal_show_trip_draft_div');
 const day_paln_sec = document.getElementById('day_paln_sec');
+const trip_proposal_posted_confirmation_body = document.getElementById('trip_proposal_posted_confirmation_body');
+const proposal_confirmation_backToAccount = document.getElementById('proposal_confirmation_backToAccount');
 let dayNum = 1;
 let dayNum2 = 0;
 //Trip plan proposal Form page html elements' connection ends here
@@ -361,20 +364,162 @@ function addNewUser(event){
                                                     }
                                                     axios.post(baseURL + 'add_day', body)
                                                         .then(res => {
-                                                            console.log(res.data);
-                                                            let titleH = document.createElement('h4');
+                                                            let titleH = document.createElement('h3');
                                                             let ttileText = document.createTextNode(`${res.data[0].day_title}`);
-                                                            let descriptionH = document.createElement('h6');
+                                                            let descriptionH = document.createElement('h4');
                                                             let descriptionText = document.createTextNode(`${res.data[0].day_description}`);
                                                             titleH.appendChild(ttileText);
                                                             descriptionH.appendChild(descriptionText);
                                                             currently_makind_day_schedule_sec.appendChild(titleH);
                                                             currently_makind_day_schedule_sec.appendChild(descriptionH);
                                                             day_paln_sec.style.display = "none";
-                                                            //add an event 
-                                                            let day_plan_id = res.data[0].day_plan_id;
+                                                            dateInput.value = '';
+                                                            dayTitleInput.value = '';
+                                                            day_descriptionTxtarea.value = '';
                                                         })
                                                         .catch(err => console.log(err));
+                                                });
+                                                addEventBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    axios.get(baseURL + 'get_date')
+                                                        .then(res => {
+                                                            let date = res.data[0].day_date.slice(0, 10);
+                                                            let event_start_time = eventStartInput.value;
+                                                            let start_time = `${date} ${event_start_time}:00`;
+                                                            let total_hours = event_total_hourInput.value;
+                                                            let event_title = event_titleInput.value;
+                                                            let event_detail = event_descriptionTxtarea.value;
+                                                            let event_color = colorsSec.value;
+                                                            if(event_color === 'select the color'){
+                                                                event_color = 'black';
+                                                            }
+                                                            let body = {
+                                                                start_time,
+                                                                total_hours,
+                                                                event_title,
+                                                                event_detail,
+                                                                event_color
+                                                            }
+                                                            axios.post(baseURL + 'add_event', body)
+                                                                .then(res => {
+                                                                    let event_div = document.createElement('div');
+                                                                    let color = res.data[0].event_color;
+                                                                    let startTime = res.data[0].start_time;
+                                                                    let totalHour = res.data[0].total_hours;
+                                                                    let titleH = document.createElement('h4');
+                                                                    let ttileText = document.createTextNode(`${res.data[0].event_title}`);
+                                                                    let detailH = document.createElement('h5');
+                                                                    let detailText = document.createTextNode(`${res.data[0].event_detail}`);
+                                                                    titleH.appendChild(ttileText);
+                                                                    detailH.appendChild(detailText);
+                                                                    event_div.id = 'event_div';
+                                                                    event_div.appendChild(titleH);
+                                                                    event_div.appendChild(detailH);
+                                                                    currently_makind_day_schedule_sec.appendChild(event_div);
+                                                                    //fix start time -> later
+                                                                    //add another day
+                                                                    //get previous day schedle
+                                                                    let day_plan_id = res.data[0].day_plan_id;
+                                                                    eventStartInput.value = '';
+                                                                    event_total_hourInput.value = '';
+                                                                    event_titleInput.value = '';
+                                                                    event_descriptionTxtarea.value = '';
+                                                                    colorsSec.value = '';
+
+                                                                    //send this to traveler
+                                                                    //trip proposal to the account page
+                                                                    //enable to choose trip proposal
+                                                                    //chosen proposal will be added to trip_plans
+                                                                    //other proposal that has the same trip-draft_id -> delete
+                                                                    //do log in too
+                                                                })
+                                                                .catch(err => console.log(err))
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                });
+                                                addAnotherDayBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    axios.get(baseURL + `day_schedule`)
+                                                        .then(res => {
+                                                            let num_of_events = res.data.length;
+                                                            //new div for the schedule of the day
+                                                            let dayDiv = document.createElement('div');
+                                                            //create elements for day_plan related info
+                                                            let day_numH = document.createElement('h2');
+                                                            let day_numNode = document.createTextNode(`DAY ${dayNum2}`);
+                                                            day_numH.appendChild(day_numNode);
+                                                            let dayTitleH = document.createElement('h2');
+                                                            let dayTitleNode = document.createTextNode(`${res.data[0].day_title}`); 
+                                                            dayTitleH.appendChild(dayTitleNode);
+                                                            let dayDescriptionP = document.createElement('p');
+                                                            let dayDescriptionNode = document.createTextNode(`${res.data[0].day_description}`);
+                                                            dayDescriptionP.appendChild(dayDescriptionNode);
+                                                            let dates = res.data[0].day_date.slice(5, 10);;
+                                                            let monthDateArr = dates.split('-');
+                                                            let year = res.data[0].day_date.slice(0, 4);
+                                                            let month = monthDateArr[0];
+                                                            let date = monthDateArr[1];
+                                                            let datesH = document.createElement('h3');
+                                                            let datesNode = document.createTextNode(`${month}/${date}/${year}`);
+                                                            datesH.appendChild(datesNode);
+                                                            //add all the elements to day div
+                                                            dayDiv.appendChild(day_numH);
+                                                            dayDiv.appendChild(dayTitleH);
+                                                            dayDiv.appendChild(dayDescriptionP);
+                                                            dayDiv.appendChild(datesH);
+                                                            for(let i = 0; i < num_of_events; i++){
+                                                                //new div for the events
+                                                                let eventDiv = document.createElement('div');
+                                                                //create elements for events related info
+                                                                let eventTitleH = document.createElement('h2');
+                                                                let eventTitleNode = document.createTextNode(`${res.data[i].event_title}`);
+                                                                eventTitleH.appendChild(eventTitleNode);
+                                                                let eventDetailP = document.createElement('p');
+                                                                let eventDetailNode = document.createTextNode(`${res.data[i].event_detail}`);
+                                                                eventDetailP.appendChild(eventDetailNode);
+                                                                let eventStartTimeP = document.createElement('p');
+                                                                let eventStartTimeNode = document.createTextNode(`@ ${res.data[i].start_time.slice(11, 16)}`);
+                                                                eventStartTimeP.appendChild(eventStartTimeNode);
+                                                                let eventTotalHorsNode = document.createTextNode(` for ${res.data[i].total_hours} hours`);
+                                                                eventStartTimeP.append(eventTotalHorsNode);
+                                                                let eventColor = res.data[i].event_color;
+
+                                                                //add all the elements to event div
+                                                                eventDiv.appendChild(eventTitleH);
+                                                                eventDiv.appendChild(eventDetailP);
+                                                                eventDiv.appendChild(eventStartTimeP);
+                                                                //add eventDiv to dayDiv
+                                                                dayDiv.appendChild(eventDiv);
+                                                            }
+                                                            already_made_day_schedule_sec.appendChild(dayDiv);
+                                                        })
+                                                        .catch(err => console.log(err));
+
+                                                    dayNum++;
+                                                    dayNum2++;
+                                                    let numNode = document.createTextNode(`${dayNum}`);
+                                                    let numNode2 = document.createTextNode(`${dayNum}`);
+                                                    let numNode3 = document.createTextNode(`${dayNum}`);
+                                                    number_of_the_day.innerHTML = '';
+                                                    number_of_the_day_for_event.innerHTML = '';
+                                                    number_of_the_day_for_addBtn.innerHTML = '';
+                                                    number_of_the_day.appendChild(numNode);
+                                                    number_of_the_day_for_event.appendChild(numNode2);
+                                                    number_of_the_day_for_addBtn.appendChild(numNode3);   
+                                                    currently_makind_day_schedule_sec.innerHTML = ''
+                                                    day_paln_sec.style.display = "block";
+                                                });
+                                                send_to_travelerBtn.addEventListener('click', (event) => {
+                                                    trip_proposal_posted_confirmation_body.style.display = "block";
+                                                    proposal_confirmation_backToAccount.addEventListener('click', (event)=>{
+                                                        trip_proposal_posted_confirmation_body.style.display = "block";
+                                                        account_body.style.display = "block";
+                                                        axios.get(baseURL + `get_trip_proposals/${userObj.user_id}`)
+                                                            .then(res => {
+                                                                console.log(res.data);
+                                                            })
+                                                            .catch(err => console.log(err))
+                                                    });
                                                 });
                                             })
                                             .catch(err => console.log('add title description ERROR' + err));

@@ -133,16 +133,18 @@ module.exports = {
     },
     getDate: (req, res) => {
         sequelize.query(`
-            SELECT date_of_day FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan);
+            select day_date from day_plans
+            where day_plan_id = (SELECT MAX(day_plan_id) FROM day_plans);
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
     addEvent: (req, res) => {
-        let {date, event_start_time, event_total_hours, event_title, event_detail, event_color} = req.body;
+        let {start_time, total_hours, event_title, event_detail, event_color} = req.body;
         sequelize.query(`
-            insert into events (day_plan_id, event_start_time, event_total_hours, event_title, event_detail, event_color)
-            values((SELECT day_plan_id FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan)), TO_TIMESTAMP('${date} ${event_start_time}:00.00', 'YYYY-MM-DD HH24:MI:SS.FF'), ${event_total_hours}, '${event_title}', '${event_detail}', '${event_color}');
+            insert into events (day_plan_id, start_time, total_hours, event_title, event_detail, event_color)
+            values((SELECT MAX(day_plan_id) FROM day_plans), '${start_time}', ${total_hours}, '${event_title}', '${event_detail}', '${event_color}');
+            SELECT * FROM events WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plans) AND event_title = '${event_title}';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
@@ -155,12 +157,13 @@ module.exports = {
         .catch(err => console.log(err));
     },
     getDaySchedule: (req, res) => {
+        let {day_plan_id} = req.params;
         sequelize.query(`
-            SELECT *
-            FROM day_plan AS d
+            SELECT d.day_plan_id, d.trip_proposal_id, d.day_date, d.day_title, d.day_description, e.start_time, e.total_hours, e.event_title, e.event_detail, e.event_color
+            FROM day_plans AS d
             JOIN events AS e
             ON d.day_plan_id = e.day_plan_id
-            WHERE d.day_plan_id = (SELECT day_plan_id FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan));
+            WHERE d.day_plan_id = (SELECT MAX(day_plan_id) FROM day_plans);
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
@@ -205,6 +208,25 @@ module.exports = {
         let {user_id} = req.params;
         sequelize.query(`
             select * from locals where user_id = ${user_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_trip_proposals: (req, res) => {
+        let {user_id} = req.params;
+        sequelize.query(`
+            SELECT tp.*, d.*, e.* FROM 
+            trip_drafts AS td
+                inner join 
+            trip_proposals AS tp
+                on td.trip_draft_id = tp.trip_draft_id
+                inner join
+            day_plans As d
+                on d.trip_proposal_id = tp.trip_proposal_id
+                inner join
+            events As e
+                on e.day_plan_id = d.day_plan_id
+            WHERE td.user_id = ${user_id};  
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
