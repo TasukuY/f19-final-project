@@ -32,47 +32,43 @@ const hasSpecharP = document.getElementById('hasSpechar');
 const isValidLengthP = document.getElementById('isValidLength');
 //SignUp page html elements' connection ends here
 
+ 
 //Account page html elements' connection starts here
 const account_body = document.getElementById('account_body');
 const accont_username_div = document.getElementById('accont_username_div');
-const account_username_h1 = document.getElementById('account_username_h1');
+const account_username_h = document.getElementById('account_username_h');
 const account_user_location_div = document.getElementById('account_user_location_div');
-const account_user_location_h3 = document.getElementById('account_user_location_h3');
+const account_user_location_h = document.getElementById('account_user_location_h');
 const account_user_email_div = document.getElementById('account_user_email_div');
-const account_user_email_h3 = document.getElementById('account_user_email_h3');
+const account_user_email_h = document.getElementById('account_user_email_h');
 const account_review_div = document.getElementById('account_review_div');
-const account_review_h3 = document.getElementById('account_review_h3');
 const account_post_new_trip_div = document.getElementById('account_post_new_trip_div');
-const account_post_new_tripBtn = document.getElementById('account_post_new_tripBtn');
+const account_post_new_trip_btn = document.getElementById('account_post_new_trip_btn');
 const account_pending_trip_plan_div = document.getElementById('account_pending_trip_plan_div');
-const account_pending_trip_plan_h3 = document.getElementById('account_pending_trip_plan_h3');
+const account_pending_trip_plan_h = document.getElementById('account_pending_trip_plan_h');
+const account_trip_proposals_from_local_div = document.getElementById('account_trip_proposals_from_local_div');
+const account_trip_proposals_from_local_h = document.getElementById('account_trip_proposals_from_local_h');
 const account_trip_plan_div = document.getElementById('account_trip_plan_div');
-const account_trip_plan_h3 = document.getElementById('account_trip_plan_h3');
-const account_past_trip_plan_div = document.getElementById('account_past_trip_plan_div');
-const account_past_trip_plan_h3 = document.getElementById('account_past_trip_plan_h3');
+const account_trip_plan_h = document.getElementById('account_trip_plan_h');
 const account_trip_request_from_travelers_div = document.getElementById('account_trip_request_from_travelers_div');
+const account_trip_request_from_travelers_h = document.getElementById('account_trip_request_from_travelers_h');
 //Account page html elements' connection ends here
 
-//New Trip Draft Form page html elements' connection starts here
-const new_trip_draft_body = document.getElementById('new_trip_draft_body');
-const countriesSec = document.getElementById('countriesSec');
-const citiesSec = document.getElementById('citiesSec');
-const startDateInput = document.getElementById('startDateInput');
-const endDateInput = document.getElementById('endDateInput');
-const numberOfPeopleInput = document.getElementById('numberOfPeopleInput');
-const budgetInput = document.getElementById('budgetInput');
-const includeHotelCheck = document.getElementById('includeHotelCheck');
-const includeMealCheck = document.getElementById('includeMealCheck');
-const includeTranspotationCheck = document.getElementById('includeTranspotationCheck');
-const budgetDetailTextarea = document.getElementById('budgetDetailTextarea');
-const noteTextarea = document.getElementById('noteTextarea');
-const trip_draft_nextBtn = document.getElementById('trip_draft_nextBtn');
-const draft_form_backToAccount = document.getElementById('draft_form_backToAccount');
-const trip_draft_posted_confirmation_body = document.getElementById('trip_draft_posted_confirmation_body');
-const confirmation_backToAccount = document.getElementById('confirmation_backToAccount');
-//New Trip Draft Form page html elements' connection ends here
+//Each trip plans sections starts here
+const my_trip_plan_body = document.getElementById('my_trip_plan_body');
+const my_trip_plan_account_btn = document.getElementById('my_trip_plan_body');
+const pending_trip_plan_body = document.getElementById('pending_trip_plan_body');
+const pending_trip_plan_cards_div = document.getElementById('pending_trip_plan_cards_div');
+const pending_trip_plan_account_btn = document.getElementById('pending_trip_plan_account_btn');
+const trip_proposals_from_locals_body = document.getElementById('trip_proposals_from_locals_body');
+const trip_proposals_account_btn = document.getElementById('trip_proposals_account_btn');
+const trip_request_from_travelers_body = document.getElementById('trip_request_from_travelers_body');
+const trip_requests_cards_div = document.getElementById('trip_requests_cards_div');
+const trip_requests_account_btn = document.getElementById('trip_requests_account_btn');
+//Each trip plans sections ends here
 
 //Trip plan proposal Form page html elements' connection starts here
+const trip_proposal_body = document.getElementById('trip_proposal_body');
 const show_tripPlan_title_description_sec = document.getElementById('show_tripPlan_title_description_sec');
 const already_made_day_schedule_sec = document.getElementById('already_made_day_schedule_sec');
 const currently_makind_day_schedule_sec = document.getElementById('currently_makind_day_schedule_sec');
@@ -114,7 +110,8 @@ number_of_the_day.appendChild(numNode);
 number_of_the_day_for_event.appendChild(numNode2);
 number_of_the_day_for_addBtn.appendChild(numNode3);
 
-function addNewUser(event){
+//register button pushed
+registerBtn.addEventListener('click', (event) => {
     event.preventDefault();
     let userInfo = {
         first_name: firstnameInput.value,
@@ -138,701 +135,247 @@ function addNewUser(event){
         authInfo,
         localInfo
     }
-
     axios.post(baseURL+'register_user', body)
         .then(res => {
-            signUp_body.style.display = "none";
+            let user = res.data[0];
             account_body.style.display = "block";
-            let userObj = res.data[0];
-            let usernameNode = document.createTextNode(`${userObj.username}`);
-            account_username_h1.innerHTML = '';
-            account_username_h1.appendChild(usernameNode);
-            let locationNode = document.createTextNode(`${userObj.city_name}, ${userObj.country_name}`);
-            account_user_location_h3.innerHTML = '';
-            account_user_location_h3.appendChild(locationNode);
-            let emailNode = document.createTextNode(`${userObj.email}`);
-            account_user_email_h3.innerHTML = '';
-            account_user_email_h3.appendChild(emailNode);
-            if(userObj.review){
-                let reviewNode = document.createTextNode(`${userObj.review}`);
-                account_review_h3.innerHTML = '';
-                account_review_h3.appendChild(reviewNode);
-                account_review_h3.style.display = "block";
-                account_trip_request_from_travelers_div.style.display = "block";
+            signUp_body.style.display = "none";
+            let usernameNode = document.createTextNode(`${user.username}`);
+            account_username_h.innerHTML = '';
+            account_username_h.appendChild(usernameNode);
+            let locationNode = document.createTextNode(`${user.city_name}, ${user.country_name}`);
+            account_user_location_h.innerHTML = '';
+            account_user_location_h.appendChild(locationNode);
+            let emailNode = document.createTextNode(`${user.email}`);
+            account_user_email_h.innerHTML = '';
+            account_user_email_h.appendChild(emailNode);
+            if(user.review !== undefined){
+                if(user.review > 0 && user.review < 2){
+                    star1.id = "star_checked";
+                }else if(user.review >= 2 && user.review < 3) {
+                    star1.id = "star_checked";
+                    star2.id = "star_checked";
+                }else if(user.review >= 3 && user.review < 4) {
+                    star1.id = "star_checked";
+                    star2.id = "star_checked";
+                    star3.id = "star_checked";
+                }else if(user.review >= 4 && user.review < 5) {
+                    star1.id = "star_checked";
+                    star2.id = "star_checked";
+                    star3.id = "star_checked";
+                    star4.id = "star_checked";
+                }else if(user.review >= 5) {
+                    star1.id = "star_checked";
+                    star2.id = "star_checked";
+                    star3.id = "star_checked";
+                    star4.id = "star_checked";
+                    star5.id = "star_checked";
+                }
+            }else{
+                account_trip_request_from_travelers_div.style.display = "none";
+                account_review_div.style.display = "none";
             }
-            //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
-            axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
-                .then(res => {
-                    if(res.data.length >= 1){
-                        for(let i = 0; i < res.data.length; i++){
-                            let trip_draftObj = res.data[i];
-                            let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                            let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                            let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                            
-                            let new_trip_draft_div = document.createElement('div');
-                            let new_trip_draft_title_h5 = document.createElement('h5');
-                            let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
-                            new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
-                            new_trip_draft_div.appendChild(new_trip_draft_title_h5);
-                            let new_trip_draft_date_P = document.createElement('p');
-                            let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
-                            new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
-                            new_trip_draft_div.appendChild(new_trip_draft_date_P);
-                            let num_of_pple_P = document.createElement('p');
-                            let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
-                            num_of_pple_P.appendChild(num_of_pple_node);
-                            new_trip_draft_div.appendChild(num_of_pple_P);
-                            let budget_per_person_P = document.createElement('p');
-                            let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
-                            budget_per_person_P.appendChild(budget_per_person_node);
-                            new_trip_draft_div.appendChild(budget_per_person_P);
-                            let include_hotel_fee_P = document.createElement('p');
-                            let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                            include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                            new_trip_draft_div.appendChild(include_hotel_fee_P);
-                            let include_meal_fee_P = document.createElement('p');
-                            let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                            include_meal_fee_P.appendChild(include_meal_fee_node);
-                            new_trip_draft_div.appendChild(include_meal_fee_P);
-                            let include_transport_fee_P = document.createElement('p');
-                            let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                            include_transport_fee_P.appendChild(include_transport_fee_node);
-                            new_trip_draft_div.appendChild(include_transport_fee_P);
-                            let budget_detail_P = document.createElement('p');
-                            let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
-                            budget_detail_P.appendChild(budget_detail_Node);
-                            new_trip_draft_div.appendChild(budget_detail_P);
-                            let note_P = document.createElement('p');
-                            let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
-                            note_P.appendChild(note_node);
-                            new_trip_draft_div.appendChild(note_P);
-                            account_pending_trip_plan_div.appendChild(new_trip_draft_div);
-                        }
-                    }
-                })
-                .catch(err => console.log(err));
-            //get all trip_drafts from travelers
-            if(account_trip_request_from_travelers_div.style.display === "block"){
-                axios.get(baseURL + `get_trip_requests_from_travelers/${userObj.city_name}`)
-                    .then(res => {
-                        if(res.data.length >= 1){
-                            for(let i = 0; i < res.data.length; i++){
-                                let trip_requestObj = res.data[i];
-                                let include_hotel_fee_text = (trip_requestObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                                let include_meal_fee_text = (trip_requestObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                                let include_transport_fee_text = (trip_requestObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                                
-                                let trip_request_div = document.createElement('div');
-                                let trip_draft_id_P = document.createElement('p');
-                                let trip_draft_id_node = document.createTextNode(`Trip Draft ID: ${trip_requestObj.trip_draft_id}`);
-                                trip_draft_id_P.appendChild(trip_draft_id_node);
-                                trip_request_div.appendChild(trip_draft_id_P);
-                                let trip_req_title_h5 = document.createElement('h5');
-                                let trip_req_title_node = document.createTextNode(`${trip_requestObj.username}'s Trip to ${trip_requestObj.city_name}, ${trip_requestObj.country_name}`);
-                                trip_req_title_h5.appendChild(trip_req_title_node);
-                                trip_request_div.appendChild(trip_req_title_h5);
-                                let rip_req_date_P = document.createElement('p');
-                                let rip_req_date_node = document.createTextNode(`${trip_requestObj.start_date.slice(5, 10).split('-')[0]}/${trip_requestObj.start_date.slice(5, 10).split('-')[1]}/${trip_requestObj.start_date.slice(0, 4)} to ${trip_requestObj.end_date.slice(5, 10).split('-')[0]}/${trip_requestObj.end_date.slice(5, 10).split('-')[1]}/${trip_requestObj.end_date.slice(0, 4)}`);
-                                rip_req_date_P.appendChild(rip_req_date_node);
-                                trip_request_div.appendChild(rip_req_date_P);
-                                let num_of_pple_P = document.createElement('p');
-                                let num_of_pple_node = document.createTextNode(`Group of ${trip_requestObj.num_of_ppl}`);
-                                num_of_pple_P.appendChild(num_of_pple_node);
-                                trip_request_div.appendChild(num_of_pple_P);
-                                let budget_per_person_P = document.createElement('p');
-                                let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_requestObj.budget}`);
-                                budget_per_person_P.appendChild(budget_per_person_node);
-                                trip_request_div.appendChild(budget_per_person_P);
-                                let include_hotel_fee_P = document.createElement('p');
-                                let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                                include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                trip_request_div.appendChild(include_hotel_fee_P);
-                                let include_meal_fee_P = document.createElement('p');
-                                let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                                include_meal_fee_P.appendChild(include_meal_fee_node);
-                                trip_request_div.appendChild(include_meal_fee_P);
-                                let include_transport_fee_P = document.createElement('p');
-                                let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                                include_transport_fee_P.appendChild(include_transport_fee_node);
-                                trip_request_div.appendChild(include_transport_fee_P);
-                                let budget_detail_P = document.createElement('p');
-                                let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_requestObj.budget_detail}`);
-                                budget_detail_P.appendChild(budget_detail_Node);
-                                trip_request_div.appendChild(budget_detail_P);
-                                let note_P = document.createElement('p');
-                                let note_node = document.createTextNode(`Note: ${trip_requestObj.note}`);
-                                note_P.appendChild(note_node);
-                                trip_request_div.appendChild(note_P);
-                                trip_request_div.id = 'trip_request_from_travelers_card'
-                                account_trip_request_from_travelers_div.appendChild(trip_request_div);
-                            }
-                            //show trip draft at the top of trip proposal form page
-                            for(let i = 1; i < account_trip_request_from_travelers_div.children.length; i++){
-                                account_trip_request_from_travelers_div.children[i].addEventListener('click', (event) => {
-                                    event.preventDefault()
-                                    account_body.style.display = "none";
-                                    trip_proposal_body.style.display = "block";
-                                    //make trip draft elements
-                                    let trip_requestArr = account_trip_request_from_travelers_div.children[i].children;
-                                    let trip_request_div = document.createElement('div');
-                                    let trip_draft_id_P = document.createElement('p');
-                                    let trip_draft_id_node = document.createTextNode(`${trip_requestArr[0].innerText}`);
-                                    trip_draft_id_P.appendChild(trip_draft_id_node);
-                                    trip_request_div.appendChild(trip_draft_id_P);
-                                    let trip_req_title_h5 = document.createElement('h5');
-                                    let trip_req_title_node = document.createTextNode(`${trip_requestArr[1].innerText}`);
-                                    trip_req_title_h5.appendChild(trip_req_title_node);
-                                    trip_request_div.appendChild(trip_req_title_h5);
-                                    let rip_req_date_P = document.createElement('p');
-                                    let rip_req_date_node = document.createTextNode(`${trip_requestArr[2].innerText}`);
-                                    rip_req_date_P.appendChild(rip_req_date_node);
-                                    trip_request_div.appendChild(rip_req_date_P);
-                                    let num_of_pple_P = document.createElement('p');
-                                    let num_of_pple_node = document.createTextNode(`${trip_requestArr[3].innerText}`);
-                                    num_of_pple_P.appendChild(num_of_pple_node);
-                                    trip_request_div.appendChild(num_of_pple_P);
-                                    let budget_per_person_P = document.createElement('p');
-                                    let budget_per_person_node = document.createTextNode(`${trip_requestArr[4].innerText}`);
-                                    budget_per_person_P.appendChild(budget_per_person_node);
-                                    trip_request_div.appendChild(budget_per_person_P);
-                                    let include_hotel_fee_P = document.createElement('p');
-                                    let include_hotel_fee_node = document.createTextNode(`${trip_requestArr[5].innerText}`);
-                                    include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                    trip_request_div.appendChild(include_hotel_fee_P);
-                                    let include_meal_fee_P = document.createElement('p');
-                                    let include_meal_fee_node = document.createTextNode(`${trip_requestArr[6].innerText}`);
-                                    include_meal_fee_P.appendChild(include_meal_fee_node);
-                                    trip_request_div.appendChild(include_meal_fee_P);
-                                    let include_transport_fee_P = document.createElement('p');
-                                    let include_transport_fee_node = document.createTextNode(`${trip_requestArr[7].innerText}`);
-                                    include_transport_fee_P.appendChild(include_transport_fee_node);
-                                    trip_request_div.appendChild(include_transport_fee_P);
-                                    let budget_detail_P = document.createElement('p');
-                                    let budget_detail_Node = document.createTextNode(`${trip_requestArr[8].innerText}`);
-                                    budget_detail_P.appendChild(budget_detail_Node);
-                                    trip_request_div.appendChild(budget_detail_P);
-                                    let note_P = document.createElement('p');
-                                    let note_node = document.createTextNode(`${trip_requestArr[9].innerText}`);
-                                    note_P.appendChild(note_node);
-                                    trip_request_div.appendChild(note_P);
-                                    trip_request_div.id = 'trip_request_from_travelers_card'
-                                    trip_proposal_show_trip_draft_div.appendChild(trip_request_div);
-                                })
-                            }  
-                            // trip proposal form starts here
-                            addTrip_title_description.addEventListener('click', (event) => {
-                                event.preventDefault();
-                                let tripTitle = titleOfTripInput.value;
-                                let tripDraftID = tripDraftIDInput.value;
-                                let tripDescription = trip_descriptionTxtarea.value;
+            //the user clicked on post new trip plan
+            account_post_new_trip_btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                console.log('post new trip plan clicked!');
+            });
 
-                                axios.get(baseURL + `get_local_id/${userObj.user_id}`)
-                                    .then(res => {
-                                        let local_id = res.data[0].local_id;
-                                        let body = {
-                                            trip_draft_id: tripDraftID,
-                                            local_id: local_id,
-                                            trip_title: tripTitle,
-                                            trip_description: tripDescription
-                                        }
-                                        //trip proposal title and description appears. 
-                                        axios.post(baseURL + 'add_title_description', body)
-                                            .then(res => {
-                                                let titleH = document.createElement('h1');
-                                                let ttileText = document.createTextNode(`${res.data[0].proposal_title}`);
-                                                let descriptionH = document.createElement('h3');
-                                                let descriptionText = document.createTextNode(`${res.data[0].proposal_description}`);
-                                                titleH.appendChild(ttileText);
-                                                descriptionH.appendChild(descriptionText);
-                                                show_tripPlan_title_description_sec.appendChild(titleH);
-                                                show_tripPlan_title_description_sec.appendChild(descriptionText);
-                                                add_tripPlan_title_description.style.display = "none";
-                                                //add a day_plan
-                                                let trip_proposal_id = res.data[0].trip_proposal_id;
-                                                addDayBtn.addEventListener('click', (event) => {
-                                                    event.preventDefault();
-                                                    let day_date = dateInput.value;
-                                                    let day_title = dayTitleInput.value;
-                                                    let day_description = day_descriptionTxtarea.value;
-                                                    let body = {
-                                                        trip_proposal_id,
-                                                        day_date,
-                                                        day_title,
-                                                        day_description
-                                                    }
-                                                    axios.post(baseURL + 'add_day', body)
-                                                        .then(res => {
-                                                            let titleH = document.createElement('h3');
-                                                            let ttileText = document.createTextNode(`${res.data[0].day_title}`);
-                                                            let descriptionH = document.createElement('h4');
-                                                            let descriptionText = document.createTextNode(`${res.data[0].day_description}`);
-                                                            titleH.appendChild(ttileText);
-                                                            descriptionH.appendChild(descriptionText);
-                                                            currently_makind_day_schedule_sec.appendChild(titleH);
-                                                            currently_makind_day_schedule_sec.appendChild(descriptionH);
-                                                            day_paln_sec.style.display = "none";
-                                                            dateInput.value = '';
-                                                            dayTitleInput.value = '';
-                                                            day_descriptionTxtarea.value = '';
-                                                        })
-                                                        .catch(err => console.log(err));
-                                                });
-                                                addEventBtn.addEventListener('click', (event) => {
-                                                    event.preventDefault();
-                                                    axios.get(baseURL + 'get_date')
-                                                        .then(res => {
-                                                            let date = res.data[0].day_date.slice(0, 10);
-                                                            let event_start_time = eventStartInput.value;
-                                                            let start_time = `${date} ${event_start_time}:00`;
-                                                            let total_hours = event_total_hourInput.value;
-                                                            let event_title = event_titleInput.value;
-                                                            let event_detail = event_descriptionTxtarea.value;
-                                                            let event_color = colorsSec.value;
-                                                            if(event_color === 'select the color'){
-                                                                event_color = 'black';
-                                                            }
-                                                            let body = {
-                                                                start_time,
-                                                                total_hours,
-                                                                event_title,
-                                                                event_detail,
-                                                                event_color
-                                                            }
-                                                            axios.post(baseURL + 'add_event', body)
-                                                                .then(res => {
-                                                                    let event_div = document.createElement('div');
-                                                                    let color = res.data[0].event_color;
-                                                                    let startTime = res.data[0].start_time;
-                                                                    let totalHour = res.data[0].total_hours;
-                                                                    let titleH = document.createElement('h4');
-                                                                    let ttileText = document.createTextNode(`${res.data[0].event_title}`);
-                                                                    let detailH = document.createElement('h5');
-                                                                    let detailText = document.createTextNode(`${res.data[0].event_detail}`);
-                                                                    titleH.appendChild(ttileText);
-                                                                    detailH.appendChild(detailText);
-                                                                    event_div.id = 'event_div';
-                                                                    event_div.appendChild(titleH);
-                                                                    event_div.appendChild(detailH);
-                                                                    currently_makind_day_schedule_sec.appendChild(event_div);
-                                                                    //fix start time -> later
-                                                                    //add another day
-                                                                    //get previous day schedle
-                                                                    let day_plan_id = res.data[0].day_plan_id;
-                                                                    eventStartInput.value = '';
-                                                                    event_total_hourInput.value = '';
-                                                                    event_titleInput.value = '';
-                                                                    event_descriptionTxtarea.value = '';
-                                                                    colorsSec.value = '';
-
-                                                                    //send this to traveler
-                                                                    //trip proposal to the account page
-                                                                    //enable to choose trip proposal
-                                                                    //chosen proposal will be added to trip_plans
-                                                                    //other proposal that has the same trip-draft_id -> delete
-                                                                    //do log in too
-                                                                })
-                                                                .catch(err => console.log(err))
-                                                        })
-                                                        .catch(err => console.log(err));
-                                                });
-                                                addAnotherDayBtn.addEventListener('click', (event) => {
-                                                    event.preventDefault();
-                                                    axios.get(baseURL + `day_schedule`)
-                                                        .then(res => {
-                                                            let num_of_events = res.data.length;
-                                                            //new div for the schedule of the day
-                                                            let dayDiv = document.createElement('div');
-                                                            //create elements for day_plan related info
-                                                            let day_numH = document.createElement('h2');
-                                                            let day_numNode = document.createTextNode(`DAY ${dayNum2}`);
-                                                            day_numH.appendChild(day_numNode);
-                                                            let dayTitleH = document.createElement('h2');
-                                                            let dayTitleNode = document.createTextNode(`${res.data[0].day_title}`); 
-                                                            dayTitleH.appendChild(dayTitleNode);
-                                                            let dayDescriptionP = document.createElement('p');
-                                                            let dayDescriptionNode = document.createTextNode(`${res.data[0].day_description}`);
-                                                            dayDescriptionP.appendChild(dayDescriptionNode);
-                                                            let dates = res.data[0].day_date.slice(5, 10);;
-                                                            let monthDateArr = dates.split('-');
-                                                            let year = res.data[0].day_date.slice(0, 4);
-                                                            let month = monthDateArr[0];
-                                                            let date = monthDateArr[1];
-                                                            let datesH = document.createElement('h3');
-                                                            let datesNode = document.createTextNode(`${month}/${date}/${year}`);
-                                                            datesH.appendChild(datesNode);
-                                                            //add all the elements to day div
-                                                            dayDiv.appendChild(day_numH);
-                                                            dayDiv.appendChild(dayTitleH);
-                                                            dayDiv.appendChild(dayDescriptionP);
-                                                            dayDiv.appendChild(datesH);
-                                                            for(let i = 0; i < num_of_events; i++){
-                                                                //new div for the events
-                                                                let eventDiv = document.createElement('div');
-                                                                //create elements for events related info
-                                                                let eventTitleH = document.createElement('h2');
-                                                                let eventTitleNode = document.createTextNode(`${res.data[i].event_title}`);
-                                                                eventTitleH.appendChild(eventTitleNode);
-                                                                let eventDetailP = document.createElement('p');
-                                                                let eventDetailNode = document.createTextNode(`${res.data[i].event_detail}`);
-                                                                eventDetailP.appendChild(eventDetailNode);
-                                                                let eventStartTimeP = document.createElement('p');
-                                                                let eventStartTimeNode = document.createTextNode(`@ ${res.data[i].start_time.slice(11, 16)}`);
-                                                                eventStartTimeP.appendChild(eventStartTimeNode);
-                                                                let eventTotalHorsNode = document.createTextNode(` for ${res.data[i].total_hours} hours`);
-                                                                eventStartTimeP.append(eventTotalHorsNode);
-                                                                let eventColor = res.data[i].event_color;
-
-                                                                //add all the elements to event div
-                                                                eventDiv.appendChild(eventTitleH);
-                                                                eventDiv.appendChild(eventDetailP);
-                                                                eventDiv.appendChild(eventStartTimeP);
-                                                                //add eventDiv to dayDiv
-                                                                dayDiv.appendChild(eventDiv);
-                                                            }
-                                                            already_made_day_schedule_sec.appendChild(dayDiv);
-                                                        })
-                                                        .catch(err => console.log(err));
-
-                                                    dayNum++;
-                                                    dayNum2++;
-                                                    let numNode = document.createTextNode(`${dayNum}`);
-                                                    let numNode2 = document.createTextNode(`${dayNum}`);
-                                                    let numNode3 = document.createTextNode(`${dayNum}`);
-                                                    number_of_the_day.innerHTML = '';
-                                                    number_of_the_day_for_event.innerHTML = '';
-                                                    number_of_the_day_for_addBtn.innerHTML = '';
-                                                    number_of_the_day.appendChild(numNode);
-                                                    number_of_the_day_for_event.appendChild(numNode2);
-                                                    number_of_the_day_for_addBtn.appendChild(numNode3);   
-                                                    currently_makind_day_schedule_sec.innerHTML = ''
-                                                    day_paln_sec.style.display = "block";
-                                                });
-                                                send_to_travelerBtn.addEventListener('click', (event) => {
-                                                    trip_proposal_posted_confirmation_body.style.display = "block";
-                                                    proposal_confirmation_backToAccount.addEventListener('click', (event)=>{
-                                                        trip_proposal_posted_confirmation_body.style.display = "block";
-                                                        account_body.style.display = "block";
-                                                        axios.get(baseURL + `get_trip_proposals/${userObj.user_id}`)
-                                                            .then(res => {
-                                                                console.log(res.data);
-                                                            })
-                                                            .catch(err => console.log(err))
-                                                    });
-                                                });
-                                            })
-                                            .catch(err => console.log('add title description ERROR' + err));
-                                    })
-                                    .catch(err => console.log(err));
-                            });
-                        }
-                       
-                    })
-                    .catch(err => console.log(err));
-            }    
-
-            //Account page js ends here
-            //create a new trip plan draft -> show trip draft form
-            account_post_new_trip_div.addEventListener('click', (event) => {
+            //the user clicked on trip plan
+            account_trip_plan_h.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
-                new_trip_draft_body.style.display = "block";
+                my_trip_plan_body.style.display = "block";
+                
+                my_trip_plan_account_btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    account_body.style.display = "block";
+                    my_trip_plan_body.style.display = "none";
+                })
             });
-            draft_form_backToAccount.addEventListener('click', (event) => {
-                event.preventDefault();
-                new_trip_draft_body.style.display = "none";
-                account_body.style.display = "block";
-                //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
-                axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
-                    .then(res => {
-                        if(res.data.length >= 1){
-                            for(let i = 0; i < res.data.length; i++){
-                                let trip_draftObj = res.data[i];
-                                let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                                let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                                let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                                
-                                let new_trip_draft_div = document.createElement('div');
-                                let new_trip_draft_title_h5 = document.createElement('h5');
-                                let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
-                                new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
-                                new_trip_draft_div.appendChild(new_trip_draft_title_h5);
-                                let new_trip_draft_date_P = document.createElement('p');
-                                let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
-                                new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
-                                new_trip_draft_div.appendChild(new_trip_draft_date_P);
-                                let num_of_pple_P = document.createElement('p');
-                                let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
-                                num_of_pple_P.appendChild(num_of_pple_node);
-                                new_trip_draft_div.appendChild(num_of_pple_P);
-                                let budget_per_person_P = document.createElement('p');
-                                let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
-                                budget_per_person_P.appendChild(budget_per_person_node);
-                                new_trip_draft_div.appendChild(budget_per_person_P);
-                                let include_hotel_fee_P = document.createElement('p');
-                                let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                                include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                new_trip_draft_div.appendChild(include_hotel_fee_P);
-                                let include_meal_fee_P = document.createElement('p');
-                                let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                                include_meal_fee_P.appendChild(include_meal_fee_node);
-                                new_trip_draft_div.appendChild(include_meal_fee_P);
-                                let include_transport_fee_P = document.createElement('p');
-                                let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                                include_transport_fee_P.appendChild(include_transport_fee_node);
-                                new_trip_draft_div.appendChild(include_transport_fee_P);
-                                let budget_detail_P = document.createElement('p');
-                                let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
-                                budget_detail_P.appendChild(budget_detail_Node);
-                                new_trip_draft_div.appendChild(budget_detail_P);
-                                let note_P = document.createElement('p');
-                                let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
-                                note_P.appendChild(note_node);
-                                new_trip_draft_div.appendChild(note_P);
-                                account_pending_trip_plan_div.appendChild(new_trip_draft_div);
-                            }
-                        }
-                    })
-                    .catch(err => console.log(err));
-                //get all trip_drafts from travelers
-                if(account_trip_request_from_travelers_div.style.display === "block"){
-                    axios.get(baseURL + `get_trip_requests_from_travelers/${userObj.city_name}`)
-                        .then(res => {
-                            if(res.data.length >= 1){
-                                for(let i = 0; i < res.data.length; i++){
-                                    let trip_requestObj = res.data[i];
-                                    let include_hotel_fee_text = (trip_requestObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                                    let include_meal_fee_text = (trip_requestObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                                    let include_transport_fee_text = (trip_requestObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                                    
-                                    let trip_request_div = document.createElement('div');
-                                    let trip_req_title_h5 = document.createElement('h5');
-                                    let trip_req_title_node = document.createTextNode(`${trip_requestObj.username}'s Trip to ${trip_requestObj.city_name}, ${trip_requestObj.country_name}`);
-                                    trip_req_title_h5.appendChild(trip_req_title_node);
-                                    trip_request_div.appendChild(trip_req_title_h5);
-                                    let rip_req_date_P = document.createElement('p');
-                                    let rip_req_date_node = document.createTextNode(`${trip_requestObj.start_date.slice(5, 10).split('-')[0]}/${trip_requestObj.start_date.slice(5, 10).split('-')[1]}/${trip_requestObj.start_date.slice(0, 4)} to ${trip_requestObj.end_date.slice(5, 10).split('-')[0]}/${trip_requestObj.end_date.slice(5, 10).split('-')[1]}/${trip_requestObj.end_date.slice(0, 4)}`);
-                                    rip_req_date_P.appendChild(rip_req_date_node);
-                                    trip_request_div.appendChild(rip_req_date_P);
-                                    let num_of_pple_P = document.createElement('p');
-                                    let num_of_pple_node = document.createTextNode(`Group of ${trip_requestObj.num_of_ppl}`);
-                                    num_of_pple_P.appendChild(num_of_pple_node);
-                                    trip_request_div.appendChild(num_of_pple_P);
-                                    let budget_per_person_P = document.createElement('p');
-                                    let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_requestObj.budget}`);
-                                    budget_per_person_P.appendChild(budget_per_person_node);
-                                    trip_request_div.appendChild(budget_per_person_P);
-                                    let include_hotel_fee_P = document.createElement('p');
-                                    let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                                    include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                    trip_request_div.appendChild(include_hotel_fee_P);
-                                    let include_meal_fee_P = document.createElement('p');
-                                    let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                                    include_meal_fee_P.appendChild(include_meal_fee_node);
-                                    trip_request_div.appendChild(include_meal_fee_P);
-                                    let include_transport_fee_P = document.createElement('p');
-                                    let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                                    include_transport_fee_P.appendChild(include_transport_fee_node);
-                                    trip_request_div.appendChild(include_transport_fee_P);
-                                    let budget_detail_P = document.createElement('p');
-                                    let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_requestObj.budget_detail}`);
-                                    budget_detail_P.appendChild(budget_detail_Node);
-                                    trip_request_div.appendChild(budget_detail_P);
-                                    let note_P = document.createElement('p');
-                                    let note_node = document.createTextNode(`Note: ${trip_requestObj.note}`);
-                                    note_P.appendChild(note_node);
-                                    trip_request_div.appendChild(note_P);
-                                    account_trip_request_from_travelers_div.appendChild(trip_request_div);
-                                }
-                            }
-                        })
-                        .catch(err => console.log(err));
-                } 
-            });
-            countriesSec.onchange = (event) => {
-                event.preventDefault();
-                let country_name = countriesSec.value; 
-                axios.get(baseURL + `load_cities/${country_name}`)
-                    .then(res => {
-                        if(res.data[0] === undefined){
-                            let selectOpt = document.createElement('option');
-                            let selectNode = document.createTextNode('select the city');
-                            let cityOpt = document.createElement('option');
-                            let cityNode = document.createTextNode('No cities registered in this country');
-                            selectOpt.appendChild(selectNode);
-                            cityOpt.appendChild(cityNode);
-                            citiesSec.innerHTML = '';
-                            citiesSec.appendChild(selectOpt);
-                            citiesSec.appendChild(cityOpt);
-                        }else{
-                            citiesSec.innerHTML = '';
-                            let selectOpt = document.createElement('option');
-                            let selectNode = document.createTextNode('select the city');
-                            selectOpt.appendChild(selectNode);
-                            citiesSec.appendChild(selectOpt);
-                            for(let i = 0; i < res.data.length; i++){
-                                let cityOpt = document.createElement('option');
-                                let cityNode = document.createTextNode(`${res.data[i].city_name}`);
-                                cityOpt.appendChild(cityNode);
-                                citiesSec.appendChild(cityOpt);
-                            }
-                        }
-                    })
-                    .catch(err => console.log(err));
-            }
-            
-            trip_draft_nextBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                //get countryID
-                axios.get(baseURL + `getCountryID/${countriesSec.value}`)
-                    .then(res => {
-                        let countryID = res.data[0].country_id
-                        //get cityID
-                        axios.get(baseURL + `getCityID/${citiesSec.value}`)
-                            .then(res => {
-                                let cityID = res.data[0].city_id
-                                let body = {
-                                    user_id: userObj.user_id,
-                                    country_id: countryID,
-                                    city_id: cityID,
-                                    start_date: startDateInput.value,
-                                    end_date: endDateInput.value,
-                                    num_of_ppl: numberOfPeopleInput.value,
-                                    budget: budgetInput.value,
-                                    include_hotel_fee: includeHotelCheck.checked,
-                                    include_meal_fee: includeMealCheck.checked,
-                                    include_transport_fee: includeTranspotationCheck.checked,
-                                    budget_detail: budgetDetailTextarea.value,
-                                    note: noteTextarea.value
-                                }
-            
-                                axios.post(baseURL + 'post_new_trip_draft', body)
-                                    .then(res => {
-                                        clearTripDraftForm();
-                                        new_trip_draft_body.style.display = "none";
-                                        trip_draft_posted_confirmation_body.style.display = "block";
-                                        confirmation_backToAccount.addEventListener('click', (event) => {
-                                            event.preventDefault();
-                                            trip_draft_posted_confirmation_body.style.display = "none";
-                                            account_body.style.display = "block";
-                                            //get all trip_drafts, trip_proposals, trip_plans from db and show it on the account page
-                                            axios.get(baseURL + `get_trip_drafts/${userObj.user_id}`)
-                                                .then(res => {
-                                                    if(res.data.length >= 1){
-                                                        for(let i = 0; i < res.data.length; i++){
-                                                            let trip_draftObj = res.data[i];
-                                                            let include_hotel_fee_text = (trip_draftObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                                                            let include_meal_fee_text = (trip_draftObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                                                            let include_transport_fee_text = (trip_draftObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                                                            
-                                                            let new_trip_draft_div = document.createElement('div');
-                                                            let new_trip_draft_title_h5 = document.createElement('h5');
-                                                            let new_trip_draft_title_node = document.createTextNode(`Trip to ${trip_draftObj.city_name}, ${trip_draftObj.country_name}`);
-                                                            new_trip_draft_title_h5.appendChild(new_trip_draft_title_node);
-                                                            new_trip_draft_div.appendChild(new_trip_draft_title_h5);
-                                                            let new_trip_draft_date_P = document.createElement('p');
-                                                            let new_trip_draft_date_node = document.createTextNode(`${trip_draftObj.start_date.slice(5, 10).split('-')[0]}/${trip_draftObj.start_date.slice(5, 10).split('-')[1]}/${trip_draftObj.start_date.slice(0, 4)} to ${trip_draftObj.end_date.slice(5, 10).split('-')[0]}/${trip_draftObj.end_date.slice(5, 10).split('-')[1]}/${trip_draftObj.end_date.slice(0, 4)}`);
-                                                            new_trip_draft_date_P.appendChild(new_trip_draft_date_node);
-                                                            new_trip_draft_div.appendChild(new_trip_draft_date_P);
-                                                            let num_of_pple_P = document.createElement('p');
-                                                            let num_of_pple_node = document.createTextNode(`Group of ${trip_draftObj.num_of_ppl}`);
-                                                            num_of_pple_P.appendChild(num_of_pple_node);
-                                                            new_trip_draft_div.appendChild(num_of_pple_P);
-                                                            let budget_per_person_P = document.createElement('p');
-                                                            let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_draftObj.budget}`);
-                                                            budget_per_person_P.appendChild(budget_per_person_node);
-                                                            new_trip_draft_div.appendChild(budget_per_person_P);
-                                                            let include_hotel_fee_P = document.createElement('p');
-                                                            let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                                                            include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                                            new_trip_draft_div.appendChild(include_hotel_fee_P);
-                                                            let include_meal_fee_P = document.createElement('p');
-                                                            let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                                                            include_meal_fee_P.appendChild(include_meal_fee_node);
-                                                            new_trip_draft_div.appendChild(include_meal_fee_P);
-                                                            let include_transport_fee_P = document.createElement('p');
-                                                            let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                                                            include_transport_fee_P.appendChild(include_transport_fee_node);
-                                                            new_trip_draft_div.appendChild(include_transport_fee_P);
-                                                            let budget_detail_P = document.createElement('p');
-                                                            let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_draftObj.budget_detail}`);
-                                                            budget_detail_P.appendChild(budget_detail_Node);
-                                                            new_trip_draft_div.appendChild(budget_detail_P);
-                                                            let note_P = document.createElement('p');
-                                                            let note_node = document.createTextNode(`Note: ${trip_draftObj.note}`);
-                                                            note_P.appendChild(note_node);
-                                                            new_trip_draft_div.appendChild(note_P);
-                                                            account_pending_trip_plan_div.appendChild(new_trip_draft_div);
-                                                        }
-                                                    }
-                                                })
-                                                .catch(err => console.log(err));
-                                            //get all trip_drafts from travelers
-                                            if(account_trip_request_from_travelers_div.style.display === "block"){
-                                                axios.get(baseURL + `get_trip_requests_from_travelers/${userObj.city_name}`)
-                                                    .then(res => {
-                                                        if(res.data.length >= 1){
-                                                            for(let i = 0; i < res.data.length; i++){
-                                                                let trip_requestObj = res.data[i];
-                                                                let include_hotel_fee_text = (trip_requestObj.include_hotel_fee) ? 'Budget include hotel fee - Yes' : 'Budget include hotel fee - No';
-                                                                let include_meal_fee_text = (trip_requestObj.include_meal_fee) ? 'Budget include Meal fee - Yes' : 'Budget include Meal fee - No';
-                                                                let include_transport_fee_text = (trip_requestObj.include_transport_fee) ? 'Budget include transportation fee - Yes' : 'Budget include transportation fee - No';
-                                                                
-                                                                let trip_request_div = document.createElement('div');
-                                                                let trip_req_title_h5 = document.createElement('h5');
-                                                                let trip_req_title_node = document.createTextNode(`${trip_requestObj.username}'s Trip to ${trip_requestObj.city_name}, ${trip_requestObj.country_name}`);
-                                                                trip_req_title_h5.appendChild(trip_req_title_node);
-                                                                trip_request_div.appendChild(trip_req_title_h5);
-                                                                let rip_req_date_P = document.createElement('p');
-                                                                let rip_req_date_node = document.createTextNode(`${trip_requestObj.start_date.slice(5, 10).split('-')[0]}/${trip_requestObj.start_date.slice(5, 10).split('-')[1]}/${trip_requestObj.start_date.slice(0, 4)} to ${trip_requestObj.end_date.slice(5, 10).split('-')[0]}/${trip_requestObj.end_date.slice(5, 10).split('-')[1]}/${trip_requestObj.end_date.slice(0, 4)}`);
-                                                                rip_req_date_P.appendChild(rip_req_date_node);
-                                                                trip_request_div.appendChild(rip_req_date_P);
-                                                                let num_of_pple_P = document.createElement('p');
-                                                                let num_of_pple_node = document.createTextNode(`Group of ${trip_requestObj.num_of_ppl}`);
-                                                                num_of_pple_P.appendChild(num_of_pple_node);
-                                                                trip_request_div.appendChild(num_of_pple_P);
-                                                                let budget_per_person_P = document.createElement('p');
-                                                                let budget_per_person_node = document.createTextNode(`Budget Per Person: $${trip_requestObj.budget}`);
-                                                                budget_per_person_P.appendChild(budget_per_person_node);
-                                                                trip_request_div.appendChild(budget_per_person_P);
-                                                                let include_hotel_fee_P = document.createElement('p');
-                                                                let include_hotel_fee_node = document.createTextNode(`${include_hotel_fee_text}`);
-                                                                include_hotel_fee_P.appendChild(include_hotel_fee_node);
-                                                                trip_request_div.appendChild(include_hotel_fee_P);
-                                                                let include_meal_fee_P = document.createElement('p');
-                                                                let include_meal_fee_node = document.createTextNode(`${include_meal_fee_text}`);
-                                                                include_meal_fee_P.appendChild(include_meal_fee_node);
-                                                                trip_request_div.appendChild(include_meal_fee_P);
-                                                                let include_transport_fee_P = document.createElement('p');
-                                                                let include_transport_fee_node = document.createTextNode(`${include_transport_fee_text}`);
-                                                                include_transport_fee_P.appendChild(include_transport_fee_node);
-                                                                trip_request_div.appendChild(include_transport_fee_P);
-                                                                let budget_detail_P = document.createElement('p');
-                                                                let budget_detail_Node = document.createTextNode(`Budget Details: ${trip_requestObj.budget_detail}`);
-                                                                budget_detail_P.appendChild(budget_detail_Node);
-                                                                trip_request_div.appendChild(budget_detail_P);
-                                                                let note_P = document.createElement('p');
-                                                                let note_node = document.createTextNode(`Note: ${trip_requestObj.note}`);
-                                                                note_P.appendChild(note_node);
-                                                                trip_request_div.appendChild(note_P);
-                                                                account_trip_request_from_travelers_div.appendChild(trip_request_div);
-                                                            }
-                                                        }
-                                                    })
-                                                    .catch(err => console.log(err));
-                                            } 
-                                        });
-                                    }) 
-                                    .catch(err => console.log(err));
-                            })
-                            .catch(err => console.log(err))
-                    })
-                    .catch(err => console.log(err))   
-            })
 
+            //the user clicked on pending trip plan
+            account_pending_trip_plan_h.addEventListener('click', (event) => {
+                event.preventDefault();
+                account_body.style.display = "none";
+                pending_trip_plan_body.style.display = "block";
+                //get all the pending trip plans from db
+                axios.get(baseURL + `get_trip_drafts/${user.user_id}`)
+                    .then(res => {
+                        let num_of_trip_drafts = res.data.length;
+                        if(num_of_trip_drafts === 0){
+                            pending_trip_plan_cards_div.innerHTML = '';
+                            pending_trip_plan_cards_div.textContent = 'No Pending Trip Plans..';
+                        }else{
+                            for(let i = 0; i < num_of_trip_drafts; i++){
+                                let trip_draft = res.data[i];
+                                let trip_draft_div = document.createElement('div');
+                                let where_to_h = document.createElement('h3');
+                                where_to_h.textContent = `My Trip to ${trip_draft.city_name}, ${trip_draft.country_name}`;
+                                trip_draft_div.appendChild(where_to_h);
+                                let when_h = document.createElement('h4');
+                                let trip_start_date = `${trip_draft.start_date.slice(5, 10).split('-')[0]}/${trip_draft.start_date.slice(5, 10).split('-')[1]}/${trip_draft.start_date.slice(0, 4)}`; 
+                                let trip_end_date = `${trip_draft.end_date.slice(5, 10).split('-')[0]}/${trip_draft.end_date.slice(5, 10).split('-')[1]}/${trip_draft.end_date.slice(0, 4)}`;
+                                when_h.textContent = `Date:  ${trip_start_date}    to    ${trip_end_date}`;
+                                trip_draft_div.appendChild(when_h);
+                                let num_of_ppl_P = document.createElement('p');
+                                num_of_ppl_P.textContent = `Group of: ${trip_draft.num_of_ppl}`;
+                                trip_draft_div.appendChild(num_of_ppl_P);
+                                let budget_P = document.createElement('p');
+                                budget_P.textContent = `Budget Per Person: $${trip_draft.budget}`;
+                                trip_draft_div.appendChild(budget_P);
+    
+                                let include_hotel_fee_P = document.createElement('p');
+                                if(trip_draft.include_hotel_fee){
+                                    include_hotel_fee_P.textContent = 'includes hotel fee? - Yes';
+                                }else{
+                                    include_hotel_fee_P.textContent = 'includes hotel fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_hotel_fee_P);
+    
+                                let include_meal_fee_P = document.createElement('p');
+                                if(trip_draft.include_meal_fee){
+                                    include_meal_fee_P.textContent = 'includes meal fee? - Yes';
+                                }else{
+                                    include_meal_fee_P.textContent = 'includes meal fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_meal_fee_P);
+    
+                                let include_transport_fee_P = document.createElement('p');
+                                if(trip_draft.include_transport_fee){
+                                    include_transport_fee_P.textContent = 'includes transportation fee? - Yes';
+                                }else{
+                                    include_transport_fee_P.textContent = 'includes transportation fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_transport_fee_P);
+    
+                                let budget_detail_P = document.createElement('p');
+                                budget_detail_P.textContent = `Budget Detail: ${trip_draft.budget_detail}`;
+                                trip_draft_div.appendChild(budget_detail_P);
+                                let note_P = document.createElement('p');
+                                note_P.textContent = `Note: ${trip_draft.note}`;
+                                trip_draft_div.appendChild(note_P);
+                                trip_draft_div.style.outline = '1px solid #222';
+                                //add the div to the pending_trip_plan_cards_div
+                                pending_trip_plan_cards_div.innerHTML = '';
+                                pending_trip_plan_cards_div.appendChild(trip_draft_div);
+                            }
+                        }
+                    })
+                    .catch(err => console.log(err));
+                pending_trip_plan_account_btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    account_body.style.display = "block";
+                    pending_trip_plan_body.style.display = "none";
+                })
+            });
+
+            //the user clicked on trip proposals from locals
+            account_trip_proposals_from_local_h.addEventListener('click', (event) => {
+                event.preventDefault();
+                account_body.style.display = "none";
+                trip_proposals_from_locals_body.style.display = "block";
+                
+                trip_proposals_account_btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    account_body.style.display = "block";
+                    trip_proposals_from_locals_body.style.display = "none";
+                })
+            });
+
+            //the user clicked on trip requests from travelers
+            account_trip_request_from_travelers_h.addEventListener('click', (event) => {
+                event.preventDefault();
+                account_body.style.display = "none";
+                trip_request_from_travelers_body.style.display = "block";
+                //get all trip requests
+                axios.get(baseURL + `get_trip_requests_from_travelers/${user.city_name}`)
+                    .then(res => {
+                        let num_of_trip_drafts = res.data.length;
+                        if(num_of_trip_drafts === 0){
+                            trip_requests_cards_div.innerHTML = '';
+                            trip_requests_cards_div.textContent = 'No Trip Requests..';
+                        }else{
+                            for(let i = 0; i < num_of_trip_drafts; i++){
+                                let trip_draft = res.data[i];
+                                let trip_draft_div = document.createElement('div');
+                                let where_to_h = document.createElement('h3');
+                                where_to_h.textContent = `${trip_draft.username}'s Trip to ${trip_draft.city_name}, ${trip_draft.country_name}`;
+                                trip_draft_div.appendChild(where_to_h);
+                                let when_h = document.createElement('h4');
+                                let trip_start_date = `${trip_draft.start_date.slice(5, 10).split('-')[0]}/${trip_draft.start_date.slice(5, 10).split('-')[1]}/${trip_draft.start_date.slice(0, 4)}`; 
+                                let trip_end_date = `${trip_draft.end_date.slice(5, 10).split('-')[0]}/${trip_draft.end_date.slice(5, 10).split('-')[1]}/${trip_draft.end_date.slice(0, 4)}`;
+                                when_h.textContent = `Date:  ${trip_start_date}    to    ${trip_end_date}`;
+                                trip_draft_div.appendChild(when_h);
+                                let trip_draft_id_P = document.createElement('p');
+                                trip_draft_id_P.textContent = `Trip Request ID:  ${trip_draft.trip_draft_id}`;
+                                trip_draft_div.appendChild(trip_draft_id_P);
+                                let num_of_ppl_P = document.createElement('p');
+                                num_of_ppl_P.textContent = `Group of: ${trip_draft.num_of_ppl}`;
+                                trip_draft_div.appendChild(num_of_ppl_P);
+                                let budget_P = document.createElement('p');
+                                budget_P.textContent = `Budget Per Person: $${trip_draft.budget}`;
+                                trip_draft_div.appendChild(budget_P);
+    
+                                let include_hotel_fee_P = document.createElement('p');
+                                if(trip_draft.include_hotel_fee){
+                                    include_hotel_fee_P.textContent = 'includes hotel fee? - Yes';
+                                }else{
+                                    include_hotel_fee_P.textContent = 'includes hotel fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_hotel_fee_P);
+    
+                                let include_meal_fee_P = document.createElement('p');
+                                if(trip_draft.include_meal_fee){
+                                    include_meal_fee_P.textContent = 'includes meal fee? - Yes';
+                                }else{
+                                    include_meal_fee_P.textContent = 'includes meal fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_meal_fee_P);
+    
+                                let include_transport_fee_P = document.createElement('p');
+                                if(trip_draft.include_transport_fee){
+                                    include_transport_fee_P.textContent = 'includes transportation fee? - Yes';
+                                }else{
+                                    include_transport_fee_P.textContent = 'includes transportation fee? - No';
+                                }
+                                trip_draft_div.appendChild(include_transport_fee_P);
+    
+                                let budget_detail_P = document.createElement('p');
+                                budget_detail_P.textContent = `Budget Detail: ${trip_draft.budget_detail}`;
+                                trip_draft_div.appendChild(budget_detail_P);
+                                let note_P = document.createElement('p');
+                                note_P.textContent = `Note: ${trip_draft.note}`;
+                                trip_draft_div.appendChild(note_P);
+                                trip_draft_div.style.outline = '1px solid #222';
+                                //add the div to the pending_trip_plan_cards_div
+                                trip_requests_cards_div.innerHTML = '';
+                                trip_requests_cards_div.appendChild(trip_draft_div);
+                            }
+                            console.log(trip_requests_cards_div.children);
+                            for(let i = 0; i < num_of_trip_drafts; i++){
+                                trip_requests_cards_div.children[i].addEventListener('click', (event) => {
+                                    event.preventDefault();
+                                    console.log('request clicked!');
+                                    trip_proposal_show_trip_draft_div.appendChild(trip_requests_cards_div.children[i]);
+                                    trip_request_from_travelers_body.style.display = "none"
+                                    trip_proposal_body.style.display = "block";
+                                });
+                            }
+
+                        }
+                    })
+                    .catch(err => console.log(err));
+                
+                trip_requests_account_btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    account_body.style.display = "block";
+                    trip_request_from_travelers_body.style.display = "none";
+                })
+            });
         })
         .catch(err => console.log(err));
-}
+});
 
 function clearTripDraftForm(){
     countriesSec.value = '';
@@ -918,6 +461,7 @@ function checkPass(event){
         hasUpperP.innerHTML = '';
         let hasUpperText = document.createTextNode("it has to contain at least 1 upper case. OK!");
         hasUpperP.appendChild(hasUpperText);
+        hasUpperP.style.color = "#97DBAE";
         passCheckDiv.appendChild(hasUpperP);
     }else{
         hasUpperP.innerHTML = '';
@@ -930,6 +474,7 @@ function checkPass(event){
         hasLowerP.innerHTML = '';
         let hasLowerText = document.createTextNode("it has to contain at least 1 lower case. OK!");
         hasLowerP.appendChild(hasLowerText);
+        hasLowerP.style.color = "#97DBAE";
         passCheckDiv.appendChild(hasLowerP);
     }else{
         hasLowerP.innerHTML = '';
@@ -942,6 +487,7 @@ function checkPass(event){
         hasNumberP.innerHTML = '';
         let hasNumberText = document.createTextNode("it has to contain at least 1 number. OK!");
         hasNumberP.appendChild(hasNumberText);
+        hasNumberP.style.color = "#97DBAE";
         passCheckDiv.appendChild(hasNumberP);
     }else{
         hasNumberP.innerHTML = '';
@@ -952,24 +498,26 @@ function checkPass(event){
 
     if(hasSpecialChar(pass)){
         hasSpecharP.innerHTML = '';
-        hasSpecialCharText = document.createTextNode("it has to contain at least 1 special character. OK!");
+        let hasSpecialCharText = document.createTextNode("it has to contain at least 1 special character. OK!");
         hasSpecharP.appendChild(hasSpecialCharText);
+        hasSpecharP.style.color = "#97DBAE";
         passCheckDiv.appendChild(hasSpecharP);
     }else{
         hasSpecharP.innerHTML = '';
-        hasSpecialCharText = document.createTextNode("it has to contain at least 1 special character. X");
+        let hasSpecialCharText = document.createTextNode("it has to contain at least 1 special character. X");
         hasSpecharP.appendChild(hasSpecialCharText);
         passCheckDiv.appendChild(hasSpecharP);
     }
 
     if(isValidLength(pass)){
         isValidLengthP.innerHTML = '';
-        isValidLengthText = document.createTextNode("it has to be at least 8 or more characters. OK!");
+        let isValidLengthText = document.createTextNode("it has to be at least 8 or more characters. OK!");
         isValidLengthP.appendChild(isValidLengthText);
+        isValidLengthP.style.color = "#97DBAE";
         passCheckDiv.appendChild(isValidLengthP);
     }else{
         isValidLengthP.innerHTML = '';
-        isValidLengthText = document.createTextNode("it has to be at least 8 or more characters. X");
+        let isValidLengthText = document.createTextNode("it has to be at least 8 or more characters. X");
         isValidLengthP.appendChild(isValidLengthText);
         passCheckDiv.appendChild(isValidLengthP);
     }
@@ -979,10 +527,13 @@ function checkPassRepass(event){
     event.preventDefault();
     re_passCheckDiv.innerHTML = '';
     const passCheckPara = document.createElement('p');
+    passCheckPara.style.color = "#FD5D5D";
+    passCheckPara.style.fontSize = "small";
     let text = document.createTextNode("Password and Retyped Password must be match.");
     if(passInput.value === re_passInput.value){
         text = document.createTextNode("Password and Retyped Password matched.");
         passCheckPara.appendChild(text);
+        passCheckPara.style.color = "#97DBAE";
         re_passCheckDiv.appendChild(passCheckPara);
         if(firstnameInput.value !== '' && lastnameInput.value !== '' && usernameInput.value !== '' && emailInput.value !== '' && isPassValid(passInput.value)){
             registerBtn.disabled = false;
@@ -996,7 +547,6 @@ function checkPassRepass(event){
 
 //SignUp page eventListner starts here
 redirectToLoginP.addEventListener('click', redirectToLogin);
-registerBtn.addEventListener('click', addNewUser);
 maleCheckbox.addEventListener('click', maleSelected);
 maleCheckboxLabel.addEventListener('click', maleSelected);
 femaleCheckbox.addEventListener('click', femaleSelected);
@@ -1010,3 +560,30 @@ registerAsLocal_nLabel.addEventListener('click', dontRegisterAsLocal);
 passInput.addEventListener('keyup', checkPass);
 re_passInput.addEventListener('keyup', checkPassRepass);
 //SignUp page eventListner endss here
+
+//for profile picture
+const imgDiv = document.querySelector('.profile-pic-div');
+const img = document.querySelector('#photo');
+const file = document.querySelector('#file');
+const uploadBtn = document.querySelector('#uploadBtn');
+
+imgDiv.addEventListener('mouseenter', () => {
+    uploadBtn.style.display = 'block';
+});
+
+imgDiv.addEventListener('mouseleave', () => {
+    uploadBtn.style.display = 'none';
+});
+
+function handleFiles() {
+    const choosedFile = this.files[0];
+    if(choosedFile) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            img.setAttribute('src', reader.result);
+        });
+        reader.readAsDataURL(choosedFile);
+    }
+}
+
+file.addEventListener("change", handleFiles, false);

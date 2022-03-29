@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-
+ 
 app.get('/seed', seed);
 app.get(baseURL + 'isLocal/:user_id', isLocal)
 app.get(baseURL + 'load_cities/:country_name', loadCities);

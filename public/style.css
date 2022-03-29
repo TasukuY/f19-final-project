@@ -1,21 +1,180 @@
-header {
-    background-color: orange;
-}
-
-footer {
-    background-color: orange;
-}
 
 #body {
-    background-color: azure;
+    max-width: 500px;
+    margin: auto;
 }
 
-#click-here {
-    color: blue;
+button {
+    background-color: #FEB242; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+button:hover{
+    background-color: #FFAD60;
+    color: #222;
+}
+
+button:active{
+    background-color: #F76E11;
+    color: white;
+}
+
+#logo_orange {
+    color: #FEB242;
+}
+
+#logo {
+    color: #222;
+    margin: 30px;
+}
+
+#hasUpper, #hasLower, #hasNumber, #hasSpechar, #isValidLength{
+    color: #FD5D5D;
+    font-size: small;
+}
+
+#signUp_body{
+    margin-left: 100px;
+}
+
+#login_body{
+    margin-left: 100px;
+}
+
+.under_button_clicable_P {
+    margin-top: 10px;
+}
+
+img {
+    height: 200px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+}
+
+h1 {
+    font-size: 30px;
+    color: #222;
+}
+
+.profile-pic-div {
+    height:  200px;
+    width: 200px;
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid grey;
+}
+
+#account_info{
+    position: absolute;
+    top: 50%;
+    left: 33%;
+}
+#accont_username_div, #account_review_div, #account_post_new_trip_div{
+    display: inline-block;
+    margin-right: 30px;
+}
+
+#account_post_new_trip_div{
+    background-color: whit;
+}
+
+#account_post_new_trip_div:hover{
+    color: #FEB242;
+    cursor: pointer;
+}
+#email_icon, #account_user_email_h{
+    display: inline;
+    vertical-align: middle;
+    margin-right: 10px;    
+}
+#post_trip_icon, #account_post_new_trip_btn{
+    display: inline;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+#home_icon, #account_user_location_h{
+    display: inline;
+    vertical-align: middle;
+    margin-right: 10px; 
+}
+
+#account_user_location_div, #account_user_email_div{
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 30px;
+}
+
+#account_trip_info{
+    position: absolute;
+    top: 65%;
+    left: 33%;
+}
+
+#account_pending_trip_plan_div, #account_trip_proposals_from_local_div, #account_trip_request_from_travelers_div, #account_trip_plan_div, #account_past_trip_plan_div{
+    margin-top: 20px;
+}
+#account_pending_trip_plan_div:hover, #account_trip_proposals_from_local_div:hover, #account_trip_request_from_travelers_div:hover, #account_trip_plan_div:hover, #account_past_trip_plan_div:hover {
+    color:#FEB242;
+    cursor: pointer;
+}
+
+#star_checked{
+    color:#FEB242
+}
+
+#photo {
+    height: 100%;
+    width: 100%;
+}
+
+#file{
+    display: none;
+}
+
+#uploadBtn{
+    height: 40px;
+    width: 100%;
+    position:absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    color: wheat;
+    line-height: 30px;
+    font-family: sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    display: none;
 }
 
 .redirect {
     cursor: pointer;
+}
+
+.redirect:hover{
+    color: gray;
 }
 
 #signUp_body {
@@ -26,7 +185,7 @@ footer {
     display: none;
 }
 
-#account_review_h3 {
+#account_review_h {
     display: none;
 }
 
@@ -50,7 +209,19 @@ footer {
     display: none;
 }
 
-#account_post_new_trip_div{
-    background-color: aqua;
+#my_trip_plan_body{
+    display: none;
+}
+
+#pending_trip_plan_body{
+    display: none;
+}
+
+#trip_proposals_from_locals_body{
+    display: none;
+}
+
+#trip_request_from_travelers_body{
+    display: none;
 }
 
