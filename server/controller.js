@@ -49,9 +49,37 @@ module.exports = {
         }
     },
     loginUser: (req, res) => {
-        let {email, password} = req.body;
+        let {email, password, isLocal} = req.body;
+        if(isLocal){
+            sequelize.query(`
+                SELECT u.user_id, u.username, u.country_name, u.city_name, a.email, l.local_id, l.review FROM 
+                users AS u 
+                    inner join 
+                auth AS a
+                    ON u.user_id = a.user_id 
+                    inner join
+                locals AS l
+                    on u.user_id = l.user_id
+                WHERE a.password = '${password}' AND a.email = '${email}';
+            `)
+            .then(dbRes => res.status(200).send(dbRes[0]))
+            .catch(err => console.log(err));
+        }else{
+            sequelize.query(`
+                SELECT u.user_id, u.username, u.country_name, u.city_name, a.email FROM users AS u 
+                JOIN auth AS a ON u.user_id = a.user_id 
+                WHERE a.password = '${password}' AND a.email = '${email}';
+            `)
+            .then(dbRes => res.status(200).send(dbRes[0]))
+            .catch(err => console.log(err));
+        }
+    },
+    isLocal: (req, res) => {
+        let {user_id} = req.params;
         sequelize.query(`
-            SELECT * FROM auth WHERE email = '${email}' AND password = '${password}';
+            SELECT l.local_id FROM locals AS l
+            JOIN users AS u ON l.user_id = u.user_id 
+            WHERE l.user_id = ${user_id};
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));

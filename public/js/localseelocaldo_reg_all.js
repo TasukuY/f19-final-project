@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 
 const baseURL = `http://localhost:5100/localseelocaldo/`;
 
