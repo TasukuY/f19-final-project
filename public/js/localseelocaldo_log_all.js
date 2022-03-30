@@ -82,6 +82,25 @@ let dayNum = 1;
 let dayNum2 = 0;
 //Trip plan proposal Form page html elements' connection ends here
 
+//New Trip Draft Form page html elements' connection starts here
+const new_trip_draft_body = document.getElementById('new_trip_draft_body');
+const countriesSec = document.getElementById('countriesSec');
+const citiesSec = document.getElementById('citiesSec');
+const startDateInput = document.getElementById('startDateInput');
+const endDateInput = document.getElementById('endDateInput');
+const numberOfPeopleInput = document.getElementById('numberOfPeopleInput');
+const budgetInput = document.getElementById('budgetInput');
+const includeHotelCheck = document.getElementById('includeHotelCheck');
+const includeMealCheck = document.getElementById('includeMealCheck');
+const includeTranspotationCheck = document.getElementById('includeTranspotationCheck');
+const budgetDetailTextarea = document.getElementById('budgetDetailTextarea');
+const noteTextarea = document.getElementById('noteTextarea');
+const trip_draft_nextBtn = document.getElementById('trip_draft_nextBtn');
+const draft_form_backToAccount = document.getElementById('draft_form_backToAccount');
+const trip_draft_posted_confirmation_body = document.getElementById('trip_draft_posted_confirmation_body');
+const confirmation_backToAccount = document.getElementById('confirmation_backToAccount');
+//New Trip Draft Form page html elements' connection ends here
+
 //default page setting
 let numNode = document.createTextNode(`${dayNum}`);
 let numNode2 = document.createTextNode(`${dayNum}`);
@@ -149,7 +168,78 @@ login_btn.addEventListener('click', (event) => {
             //the user clicked on post new trip plan
             account_post_new_trip_btn.addEventListener('click', (event) => {
                 event.preventDefault();
-                console.log('post new trip plan clicked!');
+                new_trip_draft_body.style.display = "block";
+                account_body.style.display = "none";
+                countriesSec.onchange = (event) => {
+                    event.preventDefault();
+                    let country_name = countriesSec.value; 
+                    axios.get(baseURL + `load_cities/${country_name}`)
+                        .then(res => {
+                            if(res.data[0] === undefined){
+                                let selectOpt = document.createElement('option');
+                                let selectNode = document.createTextNode('select the city');
+                                let cityOpt = document.createElement('option');
+                                let cityNode = document.createTextNode('No cities registered in this country');
+                                selectOpt.appendChild(selectNode);
+                                cityOpt.appendChild(cityNode);
+                                citiesSec.innerHTML = '';
+                                citiesSec.appendChild(selectOpt);
+                                citiesSec.appendChild(cityOpt);
+                            }else{
+                                citiesSec.innerHTML = '';
+                                let selectOpt = document.createElement('option');
+                                let selectNode = document.createTextNode('select the city');
+                                selectOpt.appendChild(selectNode);
+                                citiesSec.appendChild(selectOpt);
+                                for(let i = 0; i < res.data.length; i++){
+                                    let cityOpt = document.createElement('option');
+                                    let cityNode = document.createTextNode(`${res.data[i].city_name}`);
+                                    cityOpt.appendChild(cityNode);
+                                    citiesSec.appendChild(cityOpt);
+                                }
+                            }
+                        })
+                        .catch(err => console.log(err));
+                }
+                trip_draft_nextBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    axios.get(baseURL + `getCountryCityID/${citiesSec.value}`)
+                    .then(res => {
+                        let cityID = res.data[0].city_id
+                        let countryID = res.data[0].country_id
+                        let body = {
+                            user_id: user.user_id,
+                            country_id: countryID,
+                            city_id: cityID,
+                            start_date: startDateInput.value,
+                            end_date: endDateInput.value,
+                            num_of_ppl: numberOfPeopleInput.value,
+                            budget: budgetInput.value,
+                            include_hotel_fee: includeHotelCheck.checked,
+                            include_meal_fee: includeMealCheck.checked,
+                            include_transport_fee: includeTranspotationCheck.checked,
+                            budget_detail: budgetDetailTextarea.value,
+                            note: noteTextarea.value
+                        };
+                        axios.post(baseURL + 'post_new_trip_draft', body)
+                            .then(res => {
+                                new_trip_draft_body.style.display = "none";
+                                trip_draft_posted_confirmation_body.style.display = "block";
+                                confirmation_backToAccount.addEventListener('click', (event) => {
+                                    trip_draft_posted_confirmation_body.style.display = "none";
+                                    account_body.style.display = "block";
+                                });
+                            })
+                            .catch(err => console.log(err));
+                    })
+                    .catch(err => console.log(err));    
+                });
+                draft_form_backToAccount.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    clearTripDraftForm();
+                    new_trip_draft_body.style.display = "none";
+                    account_body.style.display = "block";
+                });
             });
 
             //the user clicked on trip plan
@@ -568,5 +658,17 @@ function handleFiles() {
         reader.readAsDataURL(choosedFile);
     }
 }
-
 file.addEventListener("change", handleFiles, false);
+function clearTripDraftForm(){
+    countriesSec.value = '';
+    citiesSec.value = '';
+    startDateInput.value = '';
+    endDateInput.value = '';
+    numberOfPeopleInput.value = '';
+    budgetInput.value = '';
+    includeHotelCheck.checked = false;
+    includeMealCheck.checked = false;
+    includeTranspotationCheck.checked = false;
+    budgetDetailTextarea.value = '';
+    noteTextarea.value = '';
+}
