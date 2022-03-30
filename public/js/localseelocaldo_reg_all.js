@@ -283,8 +283,8 @@ registerBtn.addEventListener('click', (event) => {
                 })
             });
 
-            //the user clicked on trip requests from travelers
-            account_trip_request_from_travelers_h.addEventListener('click', (event) => {
+           //the user clicked on trip requests from travelers
+           account_trip_request_from_travelers_h.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
                 trip_request_from_travelers_body.style.display = "block";
@@ -301,6 +301,7 @@ registerBtn.addEventListener('click', (event) => {
                                 let trip_draft_div = document.createElement('div');
                                 let where_to_h = document.createElement('h3');
                                 where_to_h.textContent = `${trip_draft.username}'s Trip to ${trip_draft.city_name}, ${trip_draft.country_name}`;
+                                where_to_h.style.background = '#FEB242';
                                 trip_draft_div.appendChild(where_to_h);
                                 let when_h = document.createElement('h4');
                                 let trip_start_date = `${trip_draft.start_date.slice(5, 10).split('-')[0]}/${trip_draft.start_date.slice(5, 10).split('-')[1]}/${trip_draft.start_date.slice(0, 4)}`; 
@@ -316,7 +317,7 @@ registerBtn.addEventListener('click', (event) => {
                                 let budget_P = document.createElement('p');
                                 budget_P.textContent = `Budget Per Person: $${trip_draft.budget}`;
                                 trip_draft_div.appendChild(budget_P);
-    
+
                                 let include_hotel_fee_P = document.createElement('p');
                                 if(trip_draft.include_hotel_fee){
                                     include_hotel_fee_P.textContent = 'includes hotel fee? - Yes';
@@ -324,7 +325,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_hotel_fee_P.textContent = 'includes hotel fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_hotel_fee_P);
-    
+
                                 let include_meal_fee_P = document.createElement('p');
                                 if(trip_draft.include_meal_fee){
                                     include_meal_fee_P.textContent = 'includes meal fee? - Yes';
@@ -332,7 +333,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_meal_fee_P.textContent = 'includes meal fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_meal_fee_P);
-    
+
                                 let include_transport_fee_P = document.createElement('p');
                                 if(trip_draft.include_transport_fee){
                                     include_transport_fee_P.textContent = 'includes transportation fee? - Yes';
@@ -340,7 +341,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_transport_fee_P.textContent = 'includes transportation fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_transport_fee_P);
-    
+
                                 let budget_detail_P = document.createElement('p');
                                 budget_detail_P.textContent = `Budget Detail: ${trip_draft.budget_detail}`;
                                 trip_draft_div.appendChild(budget_detail_P);
@@ -352,16 +353,210 @@ registerBtn.addEventListener('click', (event) => {
                                 trip_requests_cards_div.innerHTML = '';
                                 trip_requests_cards_div.appendChild(trip_draft_div);
                             }
-                            console.log(trip_requests_cards_div.children);
                             for(let i = 0; i < num_of_trip_drafts; i++){
                                 trip_requests_cards_div.children[i].addEventListener('click', (event) => {
                                     event.preventDefault();
-                                    console.log('request clicked!');
                                     trip_proposal_show_trip_draft_div.appendChild(trip_requests_cards_div.children[i]);
                                     trip_request_from_travelers_body.style.display = "none"
-                                    trip_proposal_body.style.display = "block";
+                                    trip_proposal_body.style.display = "block";                                 
                                 });
                             }
+                            addTrip_title_description.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                let tripTitle = titleOfTripInput.value;
+                                let tripDraftID = tripDraftIDInput.value;
+                                let tripDescription = trip_descriptionTxtarea.value;
+
+                                axios.get(baseURL + `get_local_id/${user.user_id}`)
+                                    .then(res => {
+                                        let local_id = res.data[0].local_id;
+                                        let body = {
+                                            trip_draft_id: tripDraftID,
+                                            local_id: local_id,
+                                            trip_title: tripTitle,
+                                            trip_description: tripDescription
+                                        }
+                                        //trip proposal title and description appears. 
+                                        axios.post(baseURL + 'add_title_description', body)
+                                            .then(res => {
+                                                let title_description_div = document.createElement('div');
+                                                let title_div = document.createElement('div');
+                                                let description_div = document.createElement('div');
+                                                let titleH = document.createElement('h2');
+                                                titleH.textContent = `${res.data[0].proposal_title}`;
+                                                let descriptionH = document.createElement('h5');
+                                                descriptionH.textContent = `${res.data[0].proposal_description}`;
+                                                titleH.style.background = '#FEB242';
+                                                title_description_div.appendChild(titleH);
+                                                title_description_div.appendChild(descriptionH);
+                                                title_description_div.style.outline = '1px solid #222';
+                                                show_tripPlan_title_description_sec.appendChild(title_description_div);
+                                                add_tripPlan_title_description.style.display = "none";
+                                                //add a day_plan
+                                                let trip_proposal_id = res.data[0].trip_proposal_id;
+                                                addDayBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    let day_date = dateInput.value;
+                                                    let day_title = dayTitleInput.value;
+                                                    let day_description = day_descriptionTxtarea.value;
+                                                    let body = {
+                                                        trip_proposal_id,
+                                                        day_date,
+                                                        day_title,
+                                                        day_description
+                                                    }
+                                                    axios.post(baseURL + 'add_day', body)
+                                                        .then(res => {
+                                                            let day_div = document.createElement('div');
+                                                            let dates = res.data[0].day_date.slice(5, 10);;
+                                                            let monthDateArr = dates.split('-');
+                                                            let year = res.data[0].day_date.slice(0, 4);
+                                                            let month = monthDateArr[0];
+                                                            let date = monthDateArr[1];
+                                                            let datesText = `${month}/${date}/${year}`;
+                                                            let day_numH = document.createElement('h4');
+                                                            day_numH.textContent = `DAY ${dayNum2 + 1}     -     ${datesText}`;
+                                                            day_numH.style.background = '#EFD7B2';
+                                                            day_div.appendChild(day_numH);
+                                                            let titleH = document.createElement('h3');
+                                                            titleH.textContent = `${res.data[0].day_title}`;
+                                                            let descriptionH = document.createElement('h5');
+                                                            descriptionH.textContent = `${res.data[0].day_description}`;
+                                                            day_div.appendChild(titleH);
+                                                            day_div.appendChild(descriptionH);
+                                                            day_div.style.outline = '1px solid #222';
+                                                            currently_makind_day_schedule_sec.appendChild(day_div);
+                                                            day_paln_sec.style.display = "none";
+                                                            dateInput.value = '';
+                                                            dayTitleInput.value = '';
+                                                            day_descriptionTxtarea.value = '';
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                });
+                                                addEventBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    axios.get(baseURL + 'get_date')
+                                                        .then(res => {
+                                                            let date = res.data[0].day_date.slice(0, 10);
+                                                            let event_start_time = eventStartInput.value;
+                                                            let start_time = `${date} ${event_start_time}:00`;
+                                                            let total_hours = event_total_hourInput.value;
+                                                            let event_title = event_titleInput.value;
+                                                            let event_detail = event_descriptionTxtarea.value;
+                                                            let event_color = colorsSec.value;
+                                                            if(event_color === 'select the color'){
+                                                                event_color = 'black';
+                                                            }
+                                                            let body = {
+                                                                start_time,
+                                                                total_hours,
+                                                                event_title,
+                                                                event_detail,
+                                                                event_color
+                                                            }
+                                                            axios.post(baseURL + 'add_event', body)
+                                                                .then(res => {
+                                                                    let event_div = document.createElement('div');
+                                                                    let color = res.data[0].event_color;
+                                                                    let startTime = res.data[0].start_time;
+                                                                    let totalHour = res.data[0].total_hours;
+                                                                    let titleH = document.createElement('h4');
+                                                                    titleH.textContent = `${res.data[0].event_title}`;
+                                                                    let detailH = document.createElement('h5');
+                                                                    detailH.textContent = `${res.data[0].event_detail}`;
+                                                                    event_div.id = 'event_div';
+                                                                    titleH.style.background = `${color}`;
+                                                                    event_div.appendChild(titleH);
+                                                                    event_div.appendChild(detailH);
+                                                                    event_div.style.outline = '1px solid #222';
+                                                                    currently_makind_day_schedule_sec.appendChild(event_div);
+                                                                    let day_plan_id = res.data[0].day_plan_id;
+                                                                    eventStartInput.value = '';
+                                                                    event_total_hourInput.value = '';
+                                                                    event_titleInput.value = '';
+                                                                    event_descriptionTxtarea.value = '';
+                                                                    colorsSec.value = '';
+                                                                })
+                                                                .catch(err => console.log(err))
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                });
+                                                addAnotherDayBtn.addEventListener('click', (event) => {
+                                                    event.preventDefault();
+                                                    axios.get(baseURL + `day_schedule`)
+                                                        .then(res => {
+                                                            let num_of_events = res.data.length;
+                                                            //new div for the schedule of the day
+                                                            let dayDiv = document.createElement('div');
+                                                            //create elements for day_plan related info
+                                                            let dates = res.data[0].day_date.slice(5, 10);;
+                                                            let monthDateArr = dates.split('-');
+                                                            let year = res.data[0].day_date.slice(0, 4);
+                                                            let month = monthDateArr[0];
+                                                            let date = monthDateArr[1];
+                                                            let datesText = `${month}/${date}/${year}`;
+                                                            let day_numH = document.createElement('h4');
+                                                            day_numH.textContent = `DAY ${dayNum2}     -     ${datesText}`;
+                                                            day_numH.style.background = '#EFD7B2';
+                                                            let dayTitleH = document.createElement('h3');
+                                                            dayTitleH.textContent = `${res.data[0].day_title}`; 
+                                                            let dayDescriptionP = document.createElement('p');
+                                                            dayDescriptionP.textContent = `${res.data[0].day_description}`;
+                                                            //add all the elements to day div
+                                                            dayDiv.appendChild(day_numH);
+                                                            dayDiv.appendChild(dayTitleH);
+                                                            dayDiv.appendChild(dayDescriptionP);
+                                                            dayDiv.style.outline = '1px solid #222';
+                                                            for(let i = 0; i < num_of_events; i++){
+                                                                //new div for the events
+                                                                let eventDiv = document.createElement('div');
+                                                                //create elements for events related info
+                                                                let eventTitleH = document.createElement('h4');
+                                                                eventTitleH.textContent = `${res.data[i].event_title}`;
+                                                                let eventDetailP = document.createElement('p');
+                                                                eventDetailP.textContent = `${res.data[i].event_detail}`;
+                                                                let eventStartTimeP = document.createElement('p');
+                                                                eventStartTimeP.textContent = `@ ${res.data[i].start_time.slice(11, 16)} for ${res.data[i].total_hours} hours`;
+                                                                let eventColor = res.data[i].event_color;
+                                                                //add all the elements to event div
+                                                                eventTitleH.style.background = `${eventColor}`;
+                                                                eventDiv.appendChild(eventTitleH);
+                                                                eventDiv.appendChild(eventDetailP);
+                                                                eventDiv.appendChild(eventStartTimeP);
+                                                                eventDiv.style.outline = '1px solid #222';
+                                                                //add eventDiv to dayDiv
+                                                                dayDiv.appendChild(eventDiv);
+                                                            }
+                                                            already_made_day_schedule_sec.appendChild(dayDiv);
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                    dayNum++;
+                                                    dayNum2++;
+                                                    let numNode = document.createTextNode(`${dayNum}`);
+                                                    let numNode2 = document.createTextNode(`${dayNum}`);
+                                                    let numNode3 = document.createTextNode(`${dayNum}`);
+                                                    number_of_the_day.innerHTML = '';
+                                                    number_of_the_day_for_event.innerHTML = '';
+                                                    number_of_the_day_for_addBtn.innerHTML = '';
+                                                    number_of_the_day.appendChild(numNode);
+                                                    number_of_the_day_for_event.appendChild(numNode2);
+                                                    number_of_the_day_for_addBtn.appendChild(numNode3);   
+                                                    currently_makind_day_schedule_sec.innerHTML = ''
+                                                    day_paln_sec.style.display = "block";
+                                                });
+                                                send_to_travelerBtn.addEventListener('click', (event) => {
+                                                    trip_proposal_body.style.display = "none"
+                                                    trip_proposal_posted_confirmation_body.style.display = "block";
+                                                    proposal_confirmation_backToAccount.addEventListener('click', (event)=>{
+                                                        account_body.style.display = "block";
+                                                        trip_proposal_posted_confirmation_body.style.display = "none";
+                                                    });
+                                                });
+                                            })
+                                            .catch(err => console.log(err));
+                                    })
+                                    .catch(err => console.log(err));
+                            });
 
                         }
                     })

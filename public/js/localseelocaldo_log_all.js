@@ -516,6 +516,7 @@ login_btn.addEventListener('click', (event) => {
                                                     day_paln_sec.style.display = "block";
                                                 });
                                                 send_to_travelerBtn.addEventListener('click', (event) => {
+                                                    trip_proposal_body.style.display = "none"
                                                     trip_proposal_posted_confirmation_body.style.display = "block";
                                                     proposal_confirmation_backToAccount.addEventListener('click', (event)=>{
                                                         account_body.style.display = "block";
