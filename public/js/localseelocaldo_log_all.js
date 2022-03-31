@@ -1,4 +1,3 @@
-
 const baseURL = `http://localhost:5100/localseelocaldo/`;
 
 //Login page html elements' connection starts here
@@ -686,7 +685,7 @@ login_btn.addEventListener('click', (event) => {
                                 trip_requests_cards_div.innerHTML = '';
                                 trip_requests_cards_div.appendChild(trip_draft_div);
                             }
-                            for(let i = 0; i < num_of_trip_drafts; i++){
+                            for(let i = 0; i < trip_requests_cards_div.children.length; i++){
                                 trip_requests_cards_div.children[i].addEventListener('click', (event) => {
                                     event.preventDefault();
                                     trip_proposal_show_trip_draft_div.appendChild(trip_requests_cards_div.children[i]);
