@@ -349,7 +349,7 @@ module.exports = {
         .catch(err => console.log(err));
     },
     add_my_events: (req, res) => {
-        let {my_event_start_time, my_event_total_hours, my_event_title, my_event_detail, my_event_color, trip_draft_id} = req.body;
+        let {my_event_start_time, my_event_total_hours, my_event_title, my_event_detail, my_event_color} = req.body;
         sequelize.query(`
             insert into my_events(my_day_plan_id, my_event_start_time, my_event_total_hours, my_event_title, my_event_detail, my_event_color)
             values(
@@ -360,7 +360,13 @@ module.exports = {
                 '${my_event_detail}',
                 '${my_event_color}'
             );
-
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    }, 
+    delete_events: (req, res) => {
+        let {trip_draft_id} = req.params;
+        sequelize.query(`
             DELETE FROM events AS e 
             USING 
                 day_plans AS d,
@@ -370,11 +376,11 @@ module.exports = {
                 e.day_plan_id = d.day_plan_id
             AND d.trip_proposal_id = tp.trip_proposal_id
             AND tp.trip_draft_id = td.trip_draft_id 
-            AND td.trip_draft_id = ${trip_draft_id}; 
+            AND td.trip_draft_id = ${trip_draft_id};  
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
-    }, 
+    },
     delete_day_plans: (req, res) => {
         let {trip_draft_id} = req.params;
         sequelize.query(`
@@ -447,6 +453,6 @@ module.exports = {
         .catch(err => console.log(err));
     }
 }
-
+ 
 // select my_trip_plan_id from my_trip_plans 
 // where my_trip_plan_id = (SELECT MAX(my_trip_plan_id) FROM my_trip_plans);

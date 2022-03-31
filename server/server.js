@@ -4,7 +4,7 @@ const exp = require('constants');
 require('dotenv').config();
 
 const baseURL = '/localseelocaldo/';
-const {registerUser, loginUser, isLocal, loadCities, getCountryCityID, postNewTripDraft, addTitleAndDescription, addDay, getDate, addEvent, getDaySchedule, get_trip_drafts, get_trip_requests_from_travelers, get_local_id, get_trip_proposals_title_discription, get_trip_proposals_days, get_trip_proposals_events, add_to_my_trip_plan, add_my_day_plan, add_my_events, delete_day_plans, delete_trip_proposal_trip_draft, get_my_trip_plans, get_my_trip_days, get_my_events} = require('./controller');
+const {registerUser, loginUser, isLocal, loadCities, getCountryCityID, postNewTripDraft, addTitleAndDescription, addDay, getDate, addEvent, getDaySchedule, get_trip_drafts, get_trip_requests_from_travelers, get_local_id, get_trip_proposals_title_discription, get_trip_proposals_days, get_trip_proposals_events, add_to_my_trip_plan, add_my_day_plan, add_my_events, delete_events, delete_day_plans, delete_trip_proposal_trip_draft, get_my_trip_plans, get_my_trip_days, get_my_events} = require('./controller');
 const {seed} = require('./seed');
 
 const app = express();
@@ -38,7 +38,8 @@ app.post(baseURL + 'add_to_my_trip_plan/:trip_proposal_id', add_to_my_trip_plan)
 app.post(baseURL + 'add_my_day_plan', add_my_day_plan);
 app.post(baseURL + 'add_my_events', add_my_events);
 
+app.delete(baseURL + `delete_events/:trip_draft_id`, delete_events);
 app.delete(baseURL + `delete_day_plans/:trip_draft_id`, delete_day_plans);
 app.delete(baseURL + `delete_trip_proposal_trip_draft/:trip_draft_id`, delete_trip_proposal_trip_draft);
-
+ 
 app.listen(process.env.SERVER_PORT, () => console.log(`server running at ${process.env.SERVER_PORT}`));

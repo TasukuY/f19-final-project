@@ -198,7 +198,7 @@ registerBtn.addEventListener('click', (event) => {
                 account_trip_request_from_travelers_div.style.display = "none";
                 account_review_div.style.display = "none";
             }
-             //the user clicked on post new trip plan
+            //the user clicked on post new trip plan
             account_post_new_trip_btn.addEventListener('click', (event) => {
                 event.preventDefault();
                 new_trip_draft_body.style.display = "block";
@@ -334,8 +334,7 @@ registerBtn.addEventListener('click', (event) => {
                                                         let my_events_num = res.data.length;
                                                         if(my_events_num !== 0){
                                                             for(let j = 0; j < my_events_num; j++){
-                                                                let my_event_res = res.data[i];
-                                                                console.log(my_event_res);
+                                                                let my_event_res = res.data[j];
                                                                 let my_events_div = document.createElement('div');
                                                                 let my_event_title_H = document.createElement('h4');
                                                                 my_event_title_H.textContent = `${my_event_res.my_event_title} @ ${my_event_res.my_event_start_time.slice(11, 16)} for ${my_event_res.my_event_total_hours} hours`;
@@ -519,7 +518,7 @@ registerBtn.addEventListener('click', (event) => {
                                                             let day_title_H = document.createElement('h4');
                                                             let month = day_plan_res.day_date.slice(5, 10).split('-')[0];
                                                             let day = day_plan_res.day_date.slice(5, 10).split('-')[1];
-                                                            day_title_H.textContent = `Day${i+1} - ${month}/${day}: ${day_plan_res.day_title}`;
+                                                            day_title_H.textContent = `Day${i+1} - ${month}/${day} ${day_plan_res.day_title}`;
                                                             day_title_H.style.background = "#EFD7B2";
                                                             day_title_H.style.outline = '1px solid #222';
                                                             let day_description_H = document.createElement('h5');
@@ -532,8 +531,20 @@ registerBtn.addEventListener('click', (event) => {
                                                                     let event_res = res.data[i];
                                                                     let day_events_div = document.createElement('div');
                                                                     let day_event_title_H = document.createElement('h5');
-                                                                    let day_event_start_time = event_res.start_time.slice(11, 16);
-                                                                    day_event_title_H.textContent = `${event_res.event_title} @ ${day_event_start_time} for ${event_res.total_hours} hours`;
+                                                                    //fixing the starign time to the right time starts here
+                                                                    let defStartTime = event_res.start_time;
+                                                                    let defHours = defStartTime.slice(11, 13);
+                                                                    let fixedHours = +defHours - 6;
+                                                                    let newHours = '';
+                                                                    if(fixedHours < 10){
+                                                                        newHours = '0' + fixedHours.toString();
+                                                                    }else{
+                                                                        newHours = fixedHours.toString();
+                                                                    }
+                                                                    let minutes = defStartTime.slice(13, 16);
+                                                                    let newTime = newHours + minutes
+                                                                    //fixing the starign time to the right time ends here
+                                                                    day_event_title_H.textContent = `${event_res.event_title} @ ${newTime} for ${event_res.total_hours} hours`;
                                                                     day_event_title_H.style.background = `${event_res.event_color}`;
                                                                     day_event_title_H.style.outline = '1px solid #222';
                                                                     let day_event_details_H = document.createElement('h5');
@@ -583,33 +594,38 @@ registerBtn.addEventListener('click', (event) => {
                                                                         my_event_total_hours: events_info_res[j].total_hours, 
                                                                         my_event_title: events_info_res[j].event_title,
                                                                         my_event_detail: events_info_res[j].event_detail,
-                                                                        my_event_color: events_info_res[j].event_color,
-                                                                        trip_draft_id: trip_proposal_res.trip_draft_id
+                                                                        my_event_color: events_info_res[j].event_color
                                                                     };
                                                                     axios.post(baseURL + 'add_my_events', body)
-                                                                        .then(res => {
-                                                                            console.log('events deleted');
-                                                                        })//add my_events and delete events rows
+                                                                        .then(res => {})//add my_events and delete events rows
                                                                         .catch(err => console.log(err));
                                                                 }
                                                             }
                                                         })
                                                         .catch(err => console.log(err));
                                                 }
-                                                 //delete day_plans
-                                                 axios.delete(baseURL + `delete_day_plans/${trip_proposal_res.trip_draft_id}`)
-                                                 .then(res => {
-                                                     console.log('day plans deleted');
-                                                 })//delete day_plans completed
-                                                 .catch(err => console.log(err))
                                             }
-                                            //delete trip_proposal and trip_drafts
-                                            axios.delete(baseURL + `delete_trip_proposal_trip_draft/${trip_proposal_res.trip_draft_id}`)
+                                            //delete events
+                                            axios.delete(baseURL + `delete_events/${trip_proposal_res.trip_draft_id}`)
+                                                .then(res => {
+                                                    console.log('events deleted');
+                                                })
+                                                .catch(err => console.log(err));
+
+                                            //delete day_plans
+                                            axios.delete(baseURL + `delete_day_plans/${trip_proposal_res.trip_draft_id}`)
+                                                .then(res => {
+                                                    console.log('day plans deleted');
+                                                })//delete day_plans completed
+                                                .catch(err => console.log(err));
+                                            
+                                             //delete trip_proposal and trip_drafts
+                                             axios.delete(baseURL + `delete_trip_proposal_trip_draft/${trip_proposal_res.trip_draft_id}`)
                                                 .then(res => {
                                                     console.log('trip proposals and drafts deleted');
                                                 })//delete trip_proposal and trip_drafts completed
                                                 .catch(err => console.log(err));
-                                            
+
                                             my_trip_plan_chosen_backToAccount.addEventListener('click', (event) => {
                                                 event.preventDefault();
                                                 my_trip_plan_chosen_body.style.display = "none";
@@ -804,10 +820,22 @@ registerBtn.addEventListener('click', (event) => {
                                                                 .then(res => {
                                                                     let event_div = document.createElement('div');
                                                                     let color = res.data[0].event_color;
-                                                                    let startTime = res.data[0].start_time;
+                                                                    //fixing the starign time to the right time starts here
+                                                                    let defStartTime = res.data[0].start_time;
+                                                                    let defHours = defStartTime.slice(11, 13);
+                                                                    let fixedHours = +defHours - 6;
+                                                                    let newHours = '';
+                                                                    if(fixedHours < 10){
+                                                                        newHours = '0' + fixedHours.toString();
+                                                                    }else{
+                                                                        newHours = fixedHours.toString();
+                                                                    }
+                                                                    let minutes = defStartTime.slice(13, 16);
+                                                                    let newTime = newHours + minutes
+                                                                    //fixing the starign time to the right time ends here
                                                                     let totalHour = res.data[0].total_hours;
                                                                     let titleH = document.createElement('h4');
-                                                                    titleH.textContent = `${res.data[0].event_title}`;
+                                                                    titleH.textContent = `${res.data[0].event_title} @ ${newTime} for ${res.data[0].total_hours} hours`;
                                                                     let detailH = document.createElement('h5');
                                                                     detailH.textContent = `${res.data[0].event_detail}`;
                                                                     event_div.id = 'event_div';
@@ -858,17 +886,28 @@ registerBtn.addEventListener('click', (event) => {
                                                                 let eventDiv = document.createElement('div');
                                                                 //create elements for events related info
                                                                 let eventTitleH = document.createElement('h4');
-                                                                eventTitleH.textContent = `${res.data[i].event_title}`;
+                                                                //fixing the starign time to the right time starts here
+                                                                let defStartTime = res.data[i].start_time;
+                                                                let defHours = defStartTime.slice(11, 13);
+                                                                let fixedHours = +defHours - 6;
+                                                                let newHours = '';
+                                                                if(fixedHours < 10){
+                                                                    newHours = '0' + fixedHours.toString();
+                                                                }else{
+                                                                    newHours = fixedHours.toString();
+                                                                }
+                                                                let minutes = defStartTime.slice(13, 16);
+                                                                let newTime = newHours + minutes
+                                                                //fixing the starign time to the right time ends here
+                                                                eventTitleH.textContent = `${res.data[i].event_title} @ ${newTime} for ${res.data[i].total_hours} hours`;
                                                                 let eventDetailP = document.createElement('p');
                                                                 eventDetailP.textContent = `${res.data[i].event_detail}`;
                                                                 let eventStartTimeP = document.createElement('p');
-                                                                eventStartTimeP.textContent = `@ ${res.data[i].start_time.slice(11, 16)} for ${res.data[i].total_hours} hours`;
                                                                 let eventColor = res.data[i].event_color;
                                                                 //add all the elements to event div
                                                                 eventTitleH.style.background = `${eventColor}`;
                                                                 eventDiv.appendChild(eventTitleH);
                                                                 eventDiv.appendChild(eventDetailP);
-                                                                eventDiv.appendChild(eventStartTimeP);
                                                                 eventDiv.style.outline = '1px solid #222';
                                                                 //add eventDiv to dayDiv
                                                                 dayDiv.appendChild(eventDiv);
