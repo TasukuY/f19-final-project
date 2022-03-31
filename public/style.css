@@ -1,6 +1,6 @@
 
 #body {
-    max-width: 500px;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -19,11 +19,11 @@
 }
 
 #signUp_body{
-    margin-left: 100px;
+    margin-left: 300px;
 }
 
 #login_body{
-    margin-left: 100px;
+    margin-left: 300px;
 }
 
 .under_button_clicable_P {
@@ -283,4 +283,18 @@ button:active{
 #addEventBtn:active, #number_of_the_day_for_addBtn:active{
     background-color: #6BCB77;
     color: white;
+}
+
+#home_right_div, #home_left_div{
+    float:left;
+    width: 400px;
+    height: 400px; 
+}
+
+#home_right_div{
+    margin-left: 50px;
+}
+
+#home_left_div{
+    margin-left: 100px;
 }
