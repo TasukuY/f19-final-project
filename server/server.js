@@ -38,7 +38,7 @@ app.post(baseURL + 'add_to_my_trip_plan/:trip_proposal_id', add_to_my_trip_plan)
 app.post(baseURL + 'add_my_day_plan', add_my_day_plan);
 app.post(baseURL + 'add_my_events', add_my_events);
 
-// app.delete(baseURL + `delete_day_plans/:day_plan_id`, delete_day_plans);
-// app.delete(baseURL + `delete_trip_proposal_trip_draft`, delete_trip_proposal_trip_draft);
+app.delete(baseURL + `delete_day_plans/:trip_draft_id`, delete_day_plans);
+app.delete(baseURL + `delete_trip_proposal_trip_draft/:trip_draft_id`, delete_trip_proposal_trip_draft);
 
 app.listen(process.env.SERVER_PORT, () => console.log(`server running at ${process.env.SERVER_PORT}`));

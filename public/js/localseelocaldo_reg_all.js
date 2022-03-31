@@ -65,6 +65,8 @@ const trip_proposals_account_btn = document.getElementById('trip_proposals_accou
 const trip_request_from_travelers_body = document.getElementById('trip_request_from_travelers_body');
 const trip_requests_cards_div = document.getElementById('trip_requests_cards_div');
 const trip_requests_account_btn = document.getElementById('trip_requests_account_btn');
+const my_trip_plan_chosen_body = document.getElementById('my_trip_plan_chosen_body');
+const my_trip_plan_chosen_backToAccount = document.getElementById('my_trip_plan_chosen_backToAccount');
 //Each trip plans sections ends here
 
 //Trip plan proposal Form page html elements' connection starts here
@@ -361,8 +363,8 @@ registerBtn.addEventListener('click', (event) => {
                 })
             });
 
-            //the user clicked on trip proposals from locals
-            account_trip_proposals_from_local_h.addEventListener('click', (event) => {
+             //the user clicked on trip proposals from locals
+             account_trip_proposals_from_local_h.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
                 trip_proposals_from_locals_body.style.display = "block";
@@ -427,7 +429,6 @@ registerBtn.addEventListener('click', (event) => {
                                                     axios.get(baseURL + `get_trip_proposals_events/${day_plan_id}`)
                                                         .then(res => {
                                                             let event_res_length = res.data.length;
-                                                            console.log(res.data);
                                                             let aDay_div = document.createElement('div');
                                                             let day_title_H = document.createElement('h4');
                                                             let month = day_plan_res.day_date.slice(5, 10).split('-')[0];
@@ -469,6 +470,61 @@ registerBtn.addEventListener('click', (event) => {
                                     readMore_P.style.display = "block";
                                     day_plan_div.style.display = "none";
                                     readLess_P.style.display = "none";
+                                });
+                                selectPlanBtn.addEventListener('click', (event) => {
+                                    axios.post(baseURL + `add_to_my_trip_plan/${trip_proposal_res.trip_proposal_id}`)
+                                        .then(res => {
+                                            my_trip_plan_chosen_body.style.display = "block";
+                                            trip_proposals_from_locals_body.style.display = "none";
+                                            let days_info_res = res.data;
+                                            let num_of_days = days_info_res.length;
+                                            if(num_of_days !== 0){
+                                                for(let i = 0; i < num_of_days; i++){
+                                                    let body= {
+                                                        my_day_date: days_info_res[i].day_date,
+                                                        my_day_title: days_info_res[i].day_title,
+                                                        my_day_description: days_info_res[i].day_description,
+                                                        day_plan_id: days_info_res[i].day_plan_id
+                                                    };
+                                                    axios.post(baseURL + 'add_my_day_plan', body)
+                                                        .then(res => {
+                                                            let events_info_res = res.data;
+                                                            let events_length = events_info_res.length;
+                                                            if(events_length !== 0){
+                                                                for(let j = 0; j < events_length; j++){
+                                                                    let body = {
+                                                                        my_event_start_time: events_info_res[j].start_time,
+                                                                        my_event_total_hours: events_info_res[j].total_hours, 
+                                                                        my_event_title: events_info_res[j].event_title,
+                                                                        my_event_detail: events_info_res[j].event_detail,
+                                                                        my_event_color: events_info_res[j].event_color,
+                                                                        trip_draft_id: trip_proposal_res.trip_draft_id
+                                                                    };
+                                                                    axios.post(baseURL + 'add_my_events', body)
+                                                                        .then(res => {})//add my_events and delete events rows
+                                                                        .catch(err => console.log(err));
+                                                                }
+                                                            }
+                                                        })
+                                                        .catch(err => console.log(err));
+                                                    //delete day_plans
+                                                    axios.delete(baseURL + `delete_day_plans/${trip_proposal_res.trip_draft_id}`)
+                                                        .then(res => {})//delete day_plans completed
+                                                        .catch(err => console.log(err))
+                                                }
+                                            }
+                                            //delete trip_proposal and trip_drafts
+                                            axios.delete(baseURL + `delete_trip_proposal_trip_draft/${trip_proposal_res.trip_draft_id}`)
+                                                .then(res => {})//delete trip_proposal and trip_drafts completed
+                                                .catch(err => console.log(err));
+                                            
+                                            my_trip_plan_chosen_backToAccount.addEventListener('click', (event) => {
+                                                event.preventDefault();
+                                                my_trip_plan_chosen_body.style.display = "none";
+                                                account_body.style.display = "block";
+                                            })
+                                        })
+                                        .catch(err => console.log(err));
                                 });
                             }
                         }
