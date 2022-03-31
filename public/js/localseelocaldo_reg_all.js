@@ -198,8 +198,8 @@ registerBtn.addEventListener('click', (event) => {
                 account_trip_request_from_travelers_div.style.display = "none";
                 account_review_div.style.display = "none";
             }
-            //the user clicked on post new trip plan
-            account_post_new_trip_btn.addEventListener('click', (event) => {
+             //the user clicked on post new trip plan
+             account_post_new_trip_btn.addEventListener('click', (event) => {
                 event.preventDefault();
                 new_trip_draft_body.style.display = "block";
                 account_body.style.display = "none";
