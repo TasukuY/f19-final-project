@@ -101,11 +101,30 @@ module.exports = {
                 event_color varchar(100)
             );
 
-            create table trip_plans (
-                trip_plan_id serial primary key,
-                trip_proposal_id integer not null references trip_proposals(trip_proposal_id),
+            create table my_trip_plans (
+                my_trip_plan_id serial primary key,
                 user_id integer not null references users(user_id),
-                local_id integer not null references locals(local_id)
+                local_id integer not null references locals(local_id),
+                trip_title varchar(100),
+                trip_description text
+            );
+
+            create table my_day_plans(
+                my_day_plan_id serial primary key,
+                my_trip_plan_id integer not null references my_trip_plans(my_trip_plan_id),
+                my_day_date date,
+                my_day_title varchar(100),
+                my_day_description text
+            );
+
+            create table my_events (
+                my_event_id serial primary key,
+                my_day_plan_id integer not null references my_day_plans(my_day_plan_id),
+                my_event_start_time timestamp,
+                my_event_total_hours float, 
+                my_event_title varchar(100),
+                my_event_detail text,
+                my_event_color varchar(100)
             );
             
             INSERT INTO countries (country_name)

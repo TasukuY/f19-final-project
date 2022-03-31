@@ -32,7 +32,6 @@ const hasSpecharP = document.getElementById('hasSpechar');
 const isValidLengthP = document.getElementById('isValidLength');
 //SignUp page html elements' connection ends here
 
- 
 //Account page html elements' connection starts here
 const account_body = document.getElementById('account_body');
 const accont_username_div = document.getElementById('accont_username_div');
@@ -61,6 +60,7 @@ const pending_trip_plan_body = document.getElementById('pending_trip_plan_body')
 const pending_trip_plan_cards_div = document.getElementById('pending_trip_plan_cards_div');
 const pending_trip_plan_account_btn = document.getElementById('pending_trip_plan_account_btn');
 const trip_proposals_from_locals_body = document.getElementById('trip_proposals_from_locals_body');
+const trip_proposals_cards_div = document.getElementById('trip_proposals_cards_div');
 const trip_proposals_account_btn = document.getElementById('trip_proposals_account_btn');
 const trip_request_from_travelers_body = document.getElementById('trip_request_from_travelers_body');
 const trip_requests_cards_div = document.getElementById('trip_requests_cards_div');
@@ -195,8 +195,8 @@ registerBtn.addEventListener('click', (event) => {
                 account_trip_request_from_travelers_div.style.display = "none";
                 account_review_div.style.display = "none";
             }
-            //the user clicked on post new trip plan
-            account_post_new_trip_btn.addEventListener('click', (event) => {
+             //the user clicked on post new trip plan
+             account_post_new_trip_btn.addEventListener('click', (event) => {
                 event.preventDefault();
                 new_trip_draft_body.style.display = "block";
                 account_body.style.display = "none";
@@ -366,7 +366,114 @@ registerBtn.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
                 trip_proposals_from_locals_body.style.display = "block";
-                
+                axios.get(baseURL + `get_trip_proposals_title_discription/${user.user_id}`)
+                    .then(res => {
+                        let num_of_trip_proposals = res.data.length;
+                        if(num_of_trip_proposals === 0){
+                            trip_proposals_cards_div.innerHTML = '';
+                            trip_proposals_cards_div.textContent = 'No Trip Requests..';
+                        }else{
+                            for(let i = 0; i < num_of_trip_proposals; i++){
+                                let trip_proposal_res = res.data[i]
+                                let aTrip_proposal_div = document.createElement('div');
+                                let day_plan_div = document.createElement('div');
+                                let proposal_id = trip_proposal_res.trip_proposal_id;
+                                let trip_proposal_titleH = document.createElement('h3');
+                                trip_proposal_titleH.textContent = `${trip_proposal_res.proposal_title} for ${trip_proposal_res.traveler_name}'s tirp to ${trip_proposal_res.city_name}, ${trip_proposal_res.country_name}`;
+                                trip_proposal_titleH.style.outline = '1px solid #222';
+                                trip_proposal_titleH.style.background = '#FEB242';
+                                aTrip_proposal_div.appendChild(trip_proposal_titleH);
+                                let localname_description_div = document.createElement('div');
+                                let local_name_H = document.createElement('h5');
+                                local_name_H.textContent = `Proposed by ${trip_proposal_res.local_name}`
+                                localname_description_div.appendChild(local_name_H);
+                                let trip_proposal_descriptionH = document.createElement('h5');
+                                trip_proposal_descriptionH.textContent = `${trip_proposal_res.proposal_description}`
+                                localname_description_div.appendChild(trip_proposal_descriptionH);
+                                localname_description_div.style.outline = '1px solid #222';
+                                aTrip_proposal_div.appendChild(localname_description_div);
+                                let readMore_P = document.createElement('p');
+                                readMore_P.textContent = 'read more';
+                                readMore_P.classList.add('redirect');
+                                let readLess_P = document.createElement('p');
+                                readLess_P.textContent = 'read less';
+                                readLess_P.classList.add('redirect');
+                                readLess_P.style.display = "none";
+                                day_plan_div.style.display = "none";
+                                let selectPlanBtn = document.createElement('button');
+                                selectPlanBtn.textContent = 'Select this as My Trip Plan';
+                                selectPlanBtn.style.background = '#19245E';
+                                aTrip_proposal_div.appendChild(readMore_P);
+                                aTrip_proposal_div.appendChild(day_plan_div);
+                                aTrip_proposal_div.appendChild(readLess_P);
+                                aTrip_proposal_div.appendChild(selectPlanBtn);
+                                let lineBreak = document.createElement('br')
+                                trip_proposals_cards_div.appendChild(aTrip_proposal_div); 
+                                trip_proposals_cards_div.appendChild(lineBreak); 
+                                readMore_P.addEventListener('click', (event) => {
+                                    axios.get(baseURL + `get_trip_proposals_days/${proposal_id}`)
+                                        .then(res => {
+                                            let num_of_dayPlans = res.data.length;
+                                            readMore_P.style.display = "none";
+                                            day_plan_div.style.display = "block";
+                                            readLess_P.style.display = "block";
+                                            if(num_of_dayPlans === 0){
+                                                day_plan_div.innerHTML = '';
+                                                day_plan_div.textContent = 'No day plans..';
+                                            }else{
+                                                for(let i = 0; i < num_of_dayPlans; i++){
+                                                    let day_plan_res = res.data[i]
+                                                    let day_plan_id = day_plan_res.day_plan_id
+                                                    axios.get(baseURL + `get_trip_proposals_events/${day_plan_id}`)
+                                                        .then(res => {
+                                                            let event_res_length = res.data.length;
+                                                            console.log(res.data);
+                                                            let aDay_div = document.createElement('div');
+                                                            let day_title_H = document.createElement('h4');
+                                                            let month = day_plan_res.day_date.slice(5, 10).split('-')[0];
+                                                            let day = day_plan_res.day_date.slice(5, 10).split('-')[1];
+                                                            day_title_H.textContent = `Day${i+1} - ${month}/${day}: ${day_plan_res.day_title}`;
+                                                            day_title_H.style.background = "#EFD7B2";
+                                                            day_title_H.style.outline = '1px solid #222';
+                                                            let day_description_H = document.createElement('h5');
+                                                            day_description_H.textContent = `${day_plan_res.day_description}`;
+                                                            aDay_div.style.outline = '1px solid #222';
+                                                            aDay_div.appendChild(day_title_H);
+                                                            aDay_div.appendChild(day_description_H);
+                                                            if(event_res_length !== 0){
+                                                                for(let i = 0; i < event_res_length; i++){
+                                                                    let event_res = res.data[i];
+                                                                    let day_events_div = document.createElement('div');
+                                                                    let day_event_title_H = document.createElement('h5');
+                                                                    let day_event_start_time = event_res.start_time.slice(11, 16);
+                                                                    day_event_title_H.textContent = `${event_res.event_title} @ ${day_event_start_time} for ${event_res.total_hours} hours`;
+                                                                    day_event_title_H.style.background = `${event_res.event_color}`;
+                                                                    day_event_title_H.style.outline = '1px solid #222';
+                                                                    let day_event_details_H = document.createElement('h5');
+                                                                    day_event_details_H.textContent = `${event_res.event_detail}`;
+                                                                    day_events_div.appendChild(day_event_title_H);
+                                                                    day_events_div.appendChild(day_event_details_H);
+                                                                    day_events_div.style.outline = '1px solid #222';
+                                                                    aDay_div.appendChild(day_events_div);
+                                                                }
+                                                            }
+                                                            day_plan_div.appendChild(aDay_div);
+                                                        })  
+                                                        .catch(err => console.log(err));
+                                                }
+                                            }
+                                        })
+                                        .catch(err => console.log(err));
+                                });
+                                readLess_P.addEventListener('click', (event) => {
+                                    readMore_P.style.display = "block";
+                                    day_plan_div.style.display = "none";
+                                    readLess_P.style.display = "none";
+                                });
+                            }
+                        }
+                    })
+                    .catch(err => console.log(err));
                 trip_proposals_account_btn.addEventListener('click', (event) => {
                     event.preventDefault();
                     account_body.style.display = "block";
@@ -374,8 +481,8 @@ registerBtn.addEventListener('click', (event) => {
                 })
             });
 
-           //the user clicked on trip requests from travelers
-           account_trip_request_from_travelers_h.addEventListener('click', (event) => {
+            //the user clicked on trip requests from travelers
+            account_trip_request_from_travelers_h.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
                 trip_request_from_travelers_body.style.display = "block";
@@ -408,7 +515,7 @@ registerBtn.addEventListener('click', (event) => {
                                 let budget_P = document.createElement('p');
                                 budget_P.textContent = `Budget Per Person: $${trip_draft.budget}`;
                                 trip_draft_div.appendChild(budget_P);
-
+    
                                 let include_hotel_fee_P = document.createElement('p');
                                 if(trip_draft.include_hotel_fee){
                                     include_hotel_fee_P.textContent = 'includes hotel fee? - Yes';
@@ -416,7 +523,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_hotel_fee_P.textContent = 'includes hotel fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_hotel_fee_P);
-
+    
                                 let include_meal_fee_P = document.createElement('p');
                                 if(trip_draft.include_meal_fee){
                                     include_meal_fee_P.textContent = 'includes meal fee? - Yes';
@@ -424,7 +531,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_meal_fee_P.textContent = 'includes meal fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_meal_fee_P);
-
+    
                                 let include_transport_fee_P = document.createElement('p');
                                 if(trip_draft.include_transport_fee){
                                     include_transport_fee_P.textContent = 'includes transportation fee? - Yes';
@@ -432,7 +539,7 @@ registerBtn.addEventListener('click', (event) => {
                                     include_transport_fee_P.textContent = 'includes transportation fee? - No';
                                 }
                                 trip_draft_div.appendChild(include_transport_fee_P);
-
+    
                                 let budget_detail_P = document.createElement('p');
                                 budget_detail_P.textContent = `Budget Detail: ${trip_draft.budget_detail}`;
                                 trip_draft_div.appendChild(budget_detail_P);

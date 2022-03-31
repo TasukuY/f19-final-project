@@ -185,6 +185,10 @@ h1 {
     display: none;
 }
 
+#my_trip_plan_chosen_body{
+    display: none;
+}
+
 #titleOfTripInput, #tripDraftIDInput, #dateInput, #dayTitleInput, #eventStartInput, #event_total_hourInput, #event_titleInput{
     width: 100%;
 }

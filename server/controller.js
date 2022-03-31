@@ -231,24 +231,137 @@ module.exports = {
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
-    get_trip_proposals: (req, res) => {
+    get_trip_proposals_title_discription: (req, res) => {
         let {user_id} = req.params;
         sequelize.query(`
-            SELECT tp.*, d.*, e.* FROM 
-            trip_drafts AS td
+            SELECT tp.*, aLocal.username AS local_name, aTraveler.username AS traveler_name, ci.city_name, co.country_name FROM 
+                trip_drafts AS td
                 inner join 
-            trip_proposals AS tp
+                cities AS ci
+                on td.city_id = ci.city_id
+                inner join
+                countries AS co
+                on ci.country_id = co.country_id
+                inner join
+                trip_proposals AS tp
                 on td.trip_draft_id = tp.trip_draft_id
+                inner join 
+                users AS aTraveler
+                on td.user_id = aTraveler.user_id
                 inner join
-            day_plans As d
-                on d.trip_proposal_id = tp.trip_proposal_id
+                locals AS l
+                on tp.local_id = l.local_id
                 inner join
-            events As e
-                on e.day_plan_id = d.day_plan_id
-            WHERE td.user_id = ${user_id};  
+                users AS aLocal
+                on l.user_id = aLocal.user_id
+            WHERE td.user_id = ${user_id}
+            order by tp.trip_proposal_id;
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_trip_proposals_days: (req, res) => {
+        let {trip_proposal_id} = req.params;
+        sequelize.query(`
+            SELECT d.* FROM 
+                trip_proposals AS tp
+                    inner join 
+                day_plans AS d
+                    on tp.trip_proposal_id = d.trip_proposal_id
+            WHERE tp.trip_proposal_id = ${trip_proposal_id}
+            order by d.day_plan_id;
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_trip_proposals_events: (req, res) => {
+        let {day_plan_id} = req.params;
+        sequelize.query(`
+            SELECT e.* FROM 
+                day_plans AS d
+                    inner join 
+                events AS e
+                    on d.day_plan_id = e.day_plan_id
+            WHERE d.day_plan_id = ${day_plan_id}
+            order by e.event_id;
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    }, 
+    add_to_my_trip_plan: (req, res) => {
+        let {trip_proposal_id} = req.params;
+        sequelize.query(`
+            insert into my_trip_plans(user_id, local_id, trip_title, trip_description)
+            values(
+                (select u.user_id from
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td 
+                      on tp.trip_draft_id = td.trip_draft_id
+                      inner join
+                    users as u
+                      on td.user_id = u.user_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}), 
+                (select local_id from trip_proposals where trip_proposal_id = ${trip_proposal_id}), 
+                (select proposal_title from trip_proposals where trip_proposal_id = ${trip_proposal_id}), 
+                (select proposal_description from trip_proposals where trip_proposal_id = ${trip_proposal_id})
+            );
+            
+            select * from day_plans where trip_proposal_id = ${trip_proposal_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    add_my_day_plan: (req, res) => {
+        let {my_day_date, my_day_title, my_day_description, day_plan_id} = req.body;
+        sequelize.query(`
+            insert into my_day_plans(my_trip_plan_id, my_day_date, my_day_title, my_day_description)
+            values(
+                (select my_trip_plan_id from my_trip_plans where my_trip_plan_id = (SELECT MAX(my_trip_plan_id) FROM my_trip_plans)),
+                '${my_day_date}',
+                '${my_day_title}',
+                '${my_day_description}'
+            );
+
+            select * from events where day_plan_id = ${day_plan_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    add_my_events: (req, res) => {
+        let {my_event_start_time, my_event_total_hours, my_event_title, my_event_detail, my_event_color, event_id} = req.body;
+        sequelize.query(`
+            insert into my_events(my_day_plan_id, my_event_start_time, my_event_total_hours, my_event_title, my_event_detail, my_event_color)
+            values(
+                (select my_day_plan_id from my_day_plans where my_day_plan_id = (SELECT MAX(my_day_plan_id) FROM my_day_plans)),
+                '${my_event_start_time}',
+                ${my_event_total_hours},
+                '${my_event_title}',
+                '${my_event_detail}',
+                '${my_event_color}'
+            );
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    }, 
+    delete_day_plans: (req, res) => {
+        let {day_plan_id} = req.params;
+        sequelize.query(`
+            DELETE FROM day_plans WHERE day_plan_id = ${day_plan_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    delete_trip_proposal_trip_draft: (req, res) => {
+        let {trip_proposal_id, trip_draft_id} = req.body;
+        sequelize.query(`
+            DELETE FROM trip_proposals WHERE trip_proposal_id = ${trip_proposal_id};
+            DELETE FROM trip_drafts WHERE trip_draft_id = ${trip_draft_id};
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     }
 }
 
+// select my_trip_plan_id from my_trip_plans 
+// where my_trip_plan_id = (SELECT MAX(my_trip_plan_id) FROM my_trip_plans);
