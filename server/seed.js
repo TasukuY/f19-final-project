@@ -24,7 +24,9 @@ module.exports = {
             drop table if exists trip_proposals;
             drop table if exists day_plans;
             drop table if exists events;
-            drop table if exists trip_plans;
+            drop table if exists my_events;
+            drop table if exists my_day_plans;
+            drop table if exists my_trip_plans;
 
             create table users (
                 user_id serial primary key, 
@@ -105,8 +107,14 @@ module.exports = {
                 my_trip_plan_id serial primary key,
                 user_id integer not null references users(user_id),
                 local_id integer not null references locals(local_id),
+                country_id integer not null references countries(country_id),
+                city_id integer not null references cities(city_id),
                 trip_title varchar(100),
-                trip_description text
+                trip_description text,
+                start_date date,
+                end_date date,
+                num_of_ppl integer,
+                budget float
             );
 
             create table my_day_plans(

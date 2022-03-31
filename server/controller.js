@@ -125,27 +125,12 @@ module.exports = {
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
-    getTitleAndDescription: (req, res) => {
-        let {trip_draft_id, local_id, trip_title, trip_description} = req.body;
-        sequelize.query(`
-            
-        `)
-        .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err));
-    },
     addDay: (req, res) => {
         let {trip_proposal_id, day_date, day_title, day_description} = req.body;
         sequelize.query(`
             insert into day_plans(trip_proposal_id, day_date, day_title, day_description)
             values (${trip_proposal_id}, '${day_date}', '${day_title}', '${day_description}');
             select * from day_plans where trip_proposal_id = ${trip_proposal_id} AND day_date = '${day_date}' AND day_title = '${day_title}' AND day_description = '${day_description}';
-        `)
-        .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err));
-    },
-    getDayInfo: (req, res) => {
-        sequelize.query(`
-            SELECT * FROM day_plan WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plan);
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
@@ -164,13 +149,6 @@ module.exports = {
             insert into events (day_plan_id, start_time, total_hours, event_title, event_detail, event_color)
             values((SELECT MAX(day_plan_id) FROM day_plans), '${start_time}', ${total_hours}, '${event_title}', '${event_detail}', '${event_color}');
             SELECT * FROM events WHERE day_plan_id = (SELECT MAX(day_plan_id) FROM day_plans) AND event_title = '${event_title}';
-        `)
-        .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err));
-    },
-    getEventInfo: (req, res) => {
-        sequelize.query(`
-            SELECT * FROM events WHERE event_id = (SELECT MAX(event_id) FROM events);
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
@@ -291,7 +269,7 @@ module.exports = {
     add_to_my_trip_plan: (req, res) => {
         let {trip_proposal_id} = req.params;
         sequelize.query(`
-            insert into my_trip_plans(user_id, local_id, trip_title, trip_description)
+            insert into my_trip_plans(user_id, local_id, country_id, city_id, trip_title, trip_description, start_date, end_date, num_of_ppl, budget)
             values(
                 (select u.user_id from
                     trip_proposals as tp
@@ -303,8 +281,50 @@ module.exports = {
                       on td.user_id = u.user_id
                     where tp.trip_proposal_id = ${trip_proposal_id}), 
                 (select local_id from trip_proposals where trip_proposal_id = ${trip_proposal_id}), 
+                (select co.country_id from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                      inner join
+                    countries as co
+                      on td.country_id = co.country_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}),
+                (select ci.city_id from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                      inner join
+                    cities as ci
+                      on td.city_id = ci.city_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}),
                 (select proposal_title from trip_proposals where trip_proposal_id = ${trip_proposal_id}), 
-                (select proposal_description from trip_proposals where trip_proposal_id = ${trip_proposal_id})
+                (select proposal_description from trip_proposals where trip_proposal_id = ${trip_proposal_id}),
+                (select td.start_date from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}),
+                (select td.end_date from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}),
+                (select td.num_of_ppl from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                    where tp.trip_proposal_id = ${trip_proposal_id}),
+                (select td.budget from 
+                    trip_proposals as tp
+                      inner join
+                    trip_drafts as td
+                      on tp.trip_draft_id = td.trip_draft_id
+                    where tp.trip_proposal_id = ${trip_proposal_id})
             );
             
             select * from day_plans where trip_proposal_id = ${trip_proposal_id};
@@ -381,6 +401,47 @@ module.exports = {
             AND td.trip_draft_id = ${trip_draft_id}; 
 
             DELETE FROM trip_drafts WHERE trip_draft_id = ${trip_draft_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_my_trip_plans: (req, res) => {
+        let {user_id} = req.params;
+        sequelize.query(`
+            select mtp.*, co.country_name, ci.city_name, traveler.username as traveler, aLocal.username as local
+            from users as traveler
+            inner join
+            my_trip_plans as mtp
+            on traveler.user_id = mtp.user_id
+            inner join
+            countries as co
+            on mtp.country_id = co.country_id
+            inner join
+            cities as ci
+            on mtp.city_id = ci.city_id
+            inner join
+            locals as l
+            on l.local_id = mtp.local_id
+            inner join
+            users as aLocal
+            on l.user_id = aLocal.user_id
+            where traveler.user_id = ${user_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_my_trip_days: (req, res) => {
+        let {my_trip_id} = req.params;
+        sequelize.query(`
+            select * from my_day_plans where my_trip_plan_id = ${my_trip_id};
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
+    },
+    get_my_events: (req, res) => {
+        let {my_day_plan_id} = req.params;
+        sequelize.query(`
+            select * from my_events where my_day_plan_id = ${my_day_plan_id};
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));

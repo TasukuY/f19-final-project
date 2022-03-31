@@ -38,6 +38,7 @@ const account_trip_request_from_travelers_h = document.getElementById('account_t
 
 //Each trip plans sections starts here
 const my_trip_plan_body = document.getElementById('my_trip_plan_body');
+const my_trip_plan_cards_div = document.getElementById('my_trip_plan_cards_div');
 const my_trip_plan_account_btn = document.getElementById('my_trip_plan_body');
 const pending_trip_plan_body = document.getElementById('pending_trip_plan_body');
 const pending_trip_plan_cards_div = document.getElementById('pending_trip_plan_cards_div');
@@ -250,7 +251,92 @@ login_btn.addEventListener('click', (event) => {
                 event.preventDefault();
                 account_body.style.display = "none";
                 my_trip_plan_body.style.display = "block";
-                
+                axios.get(baseURL + `get_my_trip_plans/${user.user_id}`)
+                    .then(res => {
+                        let my_trip_plans_num = res.data.length;
+                        if(my_trip_plans_num === 0){
+                            my_trip_plan_cards_div.innerHTML = '';
+                            my_trip_plan_cards_div.textContent = 'No Trip Plans..';
+                        }else{
+                            // aTrip_proposal_div = my_trip_div. proposal_id = my_trip_id. trip_proposal_titleH = trip_titleH. trip_descriptionH = trip_proposal_descriptionH
+                            for(let i = 0; i < my_trip_plans_num; i++){
+                                let my_trip_plan_res = res.data[i];
+                                let my_trip_div = document.createElement('div');
+                                let day_plan_div = document.createElement('div');
+                                let my_trip_id = my_trip_plan_res.my_trip_plan_id;
+                                let trip_titleH = document.createElement('h3');
+                                trip_titleH.textContent = `${my_trip_plan_res.trip_title} in ${my_trip_plan_res.city_name}, ${my_trip_plan_res.country_name}`;
+                                trip_titleH.style.outline = '1px solid #222';
+                                trip_titleH.style.background = '#FEB242';
+                                my_trip_div.appendChild(trip_titleH);
+                                let localname_description_div = document.createElement('div');
+                                let local_name_H = document.createElement('h5');
+                                local_name_H.textContent = `This plan is made by ${my_trip_plan_res.local}`
+                                localname_description_div.appendChild(local_name_H);
+                                let trip_descriptionH = document.createElement('h5');
+                                trip_descriptionH.textContent = `${my_trip_plan_res.trip_description}`
+                                localname_description_div.appendChild(trip_descriptionH);
+                                localname_description_div.style.outline = '1px solid #222';
+                                my_trip_div.appendChild(localname_description_div);
+                                
+
+                                //add days and events
+                                axios.get(baseURL + `get_my_trip_days/${my_trip_id}`)
+                                    .then(res => {
+                                        let my_days_num = res.data.length;
+                                        if(my_days_num !== 0){
+                                            for(let i = 0; i < my_days_num; i++){
+                                                let my_day_plan_res = res.data[i];
+                                                let my_day_plan_id = my_day_plan_res.my_day_plan_id;
+                                                let my_day_titleH = document.createElement('h4');
+                                                let year = my_day_plan_res.my_day_date.slice(0, 4);
+                                                let month = my_day_plan_res.my_day_date.slice(5, 10).split('-')[0];
+                                                let day = my_day_plan_res.my_day_date.slice(5, 10).split('-')[1];
+                                                my_day_titleH.textContent = `Day${i+1} - ${month}/${day} : ${my_day_plan_res.my_day_title}`;
+                                                my_day_titleH.style.background = "#EFD7B2";
+                                                my_day_titleH.style.outline = '1px solid #222';
+                                                let my_day_description_H = document.createElement('h5');
+                                                my_day_description_H.textContent = `${my_day_plan_res.my_day_description}`;
+                                                my_day_description_H.style.outline = '1px solid #222';
+                                                day_plan_div.appendChild(my_day_titleH);
+                                                day_plan_div.appendChild(my_day_description_H);
+                                                axios.get(baseURL + `get_my_events/${my_day_plan_id}`)
+                                                    .then(res => {
+                                                        let my_events_num = res.data.length;
+                                                        if(my_events_num !== 0){
+                                                            for(let j = 0; j < my_events_num; j++){
+                                                                let my_event_res = res.data[i];
+                                                                console.log(my_event_res);
+                                                                let my_events_div = document.createElement('div');
+                                                                let my_event_title_H = document.createElement('h4');
+                                                                my_event_title_H.textContent = `${my_event_res.my_event_title} @ ${my_event_res.my_event_start_time.slice(11, 16)} for ${my_event_res.my_event_total_hours} hours`;
+                                                                my_event_title_H.style.background = `${my_event_res.my_event_color}`;
+                                                                my_event_title_H.style.outline = '1px solid #222';
+                                                                my_events_div.appendChild(my_event_title_H);
+                                                                let my_event_detail_H = document.createElement('h5');
+                                                                my_event_detail_H.textContent = `${my_event_res.my_event_detail}`;
+                                                                my_event_detail_H.style.outline = '1px solid #222';
+                                                                my_events_div.appendChild(my_event_detail_H);
+                                                                day_plan_div.appendChild(my_events_div);
+                                                            }
+                                                        }
+                                                    })  
+                                                    .catch(err => console.log(err));
+
+                                                day_plan_div.style.outline = '1px solid #222';
+                                                my_trip_div.appendChild(day_plan_div);
+                                            }
+                                        }
+                                    })
+                                    .catch(err => console.log(err));
+                                
+                                my_trip_plan_cards_div.appendChild(my_trip_div); 
+                                let lineBreak = document.createElement('br')
+                                my_trip_plan_cards_div.appendChild(lineBreak); 
+                            }
+                        }
+                    })
+                    .catch(err => console.log(err));
                 my_trip_plan_account_btn.addEventListener('click', (event) => {
                     event.preventDefault();
                     account_body.style.display = "block";
@@ -472,21 +558,27 @@ login_btn.addEventListener('click', (event) => {
                                                                         trip_draft_id: trip_proposal_res.trip_draft_id
                                                                     };
                                                                     axios.post(baseURL + 'add_my_events', body)
-                                                                        .then(res => {})//add my_events and delete events rows
+                                                                        .then(res => {
+                                                                            console.log('events deleted');
+                                                                        })//add my_events and delete events rows
                                                                         .catch(err => console.log(err));
                                                                 }
                                                             }
                                                         })
                                                         .catch(err => console.log(err));
-                                                    //delete day_plans
-                                                    axios.delete(baseURL + `delete_day_plans/${trip_proposal_res.trip_draft_id}`)
-                                                        .then(res => {})//delete day_plans completed
-                                                        .catch(err => console.log(err))
                                                 }
+                                                 //delete day_plans
+                                                 axios.delete(baseURL + `delete_day_plans/${trip_proposal_res.trip_draft_id}`)
+                                                 .then(res => {
+                                                     console.log('day plans deleted');
+                                                 })//delete day_plans completed
+                                                 .catch(err => console.log(err))
                                             }
                                             //delete trip_proposal and trip_drafts
                                             axios.delete(baseURL + `delete_trip_proposal_trip_draft/${trip_proposal_res.trip_draft_id}`)
-                                                .then(res => {})//delete trip_proposal and trip_drafts completed
+                                                .then(res => {
+                                                    console.log('trip proposals and drafts deleted');
+                                                })//delete trip_proposal and trip_drafts completed
                                                 .catch(err => console.log(err));
                                             
                                             my_trip_plan_chosen_backToAccount.addEventListener('click', (event) => {
